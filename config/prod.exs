@@ -24,7 +24,9 @@ config :snownix, SnownixWeb.Endpoint,
     host: System.get_env("APP_HOST_NAME"),
     port: 443
   ],
-  check_origin: System.get_env("APP_HOST_NAME")
+  check_origin: [
+    "//" <> System.get_env("APP_HOST_NAME")
+  ]
 
 # https: [
 #   ...,
