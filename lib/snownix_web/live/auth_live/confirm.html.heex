@@ -1,0 +1,23 @@
+<section class="w-full flex justify-center">
+    <div class="flex flex-col items-start justify-start w-full h-full p-10 lg:p-16 xl:p-24 max-w-2xl">
+        <h4 class="w-full text-3xl font-bold">Confirm my account</h4>
+        <p class="text-lg text-low mb-2">
+            You already confirmed your account?  
+            <%= live_patch "Sign in", to: Routes.auth_login_path(@socket, :login), class: "text-primary underline"  %>
+        </p>
+        <.live_component module={SnownixWeb.SharedLive.AlertsComponent} flash={@flash} id="register-alerts" />
+
+        <%= form_for :user, Routes.user_confirmation_path(@socket, :update, @token), [as: :user, class: "relative w-full space-y-4"],  fn f -> %>
+            <div class="relative">
+                <%= label f, :email, class: "font-medium text-gray-900" %>
+                <%= email_input f, :email, placeholder: "Enter Your Email Address", required: true %>
+            </div>
+       
+            <div>
+              <button type="submit" class="btn dark">Confirm my account</button>
+            </div>
+        <% end %>
+    </div>
+</section>
+
+

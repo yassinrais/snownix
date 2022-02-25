@@ -1,6 +1,8 @@
 defmodule SnownixWeb.Router do
   use SnownixWeb, :router
 
+  import SnownixWeb.UserAuth
+
   pipeline :browser do
     plug :accepts, ["html"]
     plug :fetch_session
@@ -8,16 +10,66 @@ defmodule SnownixWeb.Router do
     plug :put_root_layout, {SnownixWeb.LayoutView, :root}
     plug :protect_from_forgery
     plug :put_secure_browser_headers
+    plug :fetch_current_user
   end
 
   pipeline :api do
     plug :accepts, ["json"]
   end
 
-  scope "/", SnownixWeb do
-    pipe_through :browser
+  ## Liveview routes
+  live_session :default, on_mount: {SnownixWeb.InitAssigns, :user} do
+    scope "/", SnownixWeb do
+      pipe_through :browser
 
-    live "/", IndexLive.Index, :index
+      live "/", IndexLive.Index, :index
+
+      scope "/auth" do
+        pipe_through [:redirect_if_user_is_authenticated]
+
+        live "/login", AuthLive.Login, :login
+        live "/register", AuthLive.Register, :register
+      end
+
+      scope "/account" do
+        scope "/" do
+          pipe_through [:require_authenticated_user]
+
+          live "/settings", AccountLive.Settings, :settings
+        end
+
+        scope "/confirm" do
+          live "/", AuthLive.Reconfirm, :reconfirm
+          live "/:token", AuthLive.Confirm, :confirm
+        end
+      end
+    end
+  end
+
+  ## Controllers
+  scope "/", SnownixWeb do
+    pipe_through [:browser]
+
+    # Auth
+    scope "/auth" do
+      scope "/" do
+        pipe_through [:redirect_if_user_is_authenticated]
+
+        post "/login", UserSessionController, :create
+        post "/register", UserRegistrationController, :create
+      end
+
+      scope "/" do
+        pipe_through [:require_authenticated_user]
+        delete "/logout", UserSessionController, :delete
+      end
+    end
+
+    # Confirmation
+    scope "/account" do
+      post "/confirm", UserConfirmationController, :create
+      post "/confirm/:token", UserConfirmationController, :update
+    end
   end
 
   # Other scopes may use custom stacks.
@@ -53,4 +105,20 @@ defmodule SnownixWeb.Router do
       forward "/mailbox", Plug.Swoosh.MailboxPreview
     end
   end
+
+  # scope "/", SnownixWeb do
+  #   pipe_through [:browser, :require_authenticated_user]
+
+  #   get "/users/settings", UserSettingsController, :edit
+  #   put "/users/settings", UserSettingsController, :update
+  #   get "/users/settings/confirm_email/:token", UserSettingsController, :confirm_email
+  # end
+
+  # get "/users/reset_password", UserResetPasswordController, :new
+  # post "/users/reset_password", UserResetPasswordController, :create
+  # get "/users/reset_password/:token", UserResetPasswordController, :edit
+  # put "/users/reset_password/:token", UserResetPasswordController, :update
+  # get "/users/settings", UserSettingsController, :edit
+  # put "/users/settings", UserSettingsController, :update
+  # get "/users/settings/confirm_email/:token", UserSettingsController, :confirm_email
 end

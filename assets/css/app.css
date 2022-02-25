@@ -6,3 +6,115 @@
 html{
     @apply font-primary;
 }
+
+input, button, .btn {
+    @apply w-full px-4 py-2.5 rounded-md;
+    @apply inline-flex items-center justify-center;
+    @apply text-base font-medium leading-6;
+}
+
+input {
+    @apply focus:outline-none focus:ring-2 focus:ring-opacity-50;
+    @apply text-lg placeholder-gray-400 bg-gray-200 focus:ring-primary;
+}
+
+/**
+ * -----------------------
+ * Buttons
+ * ----------------------- */
+.btn {
+    @apply inline-flex justify-center shadow-sm;
+    @apply text-dark bg-white border border-gray-200 hover:bg-opacity-95;
+    @apply focus:outline-none focus:ring-2 focus:ring-offset-2 focus:shadow-none;
+}
+
+.btn.dark {
+    @apply text-light;
+}
+.btn.primary {
+    @apply bg-primary text-light;
+}
+
+/** 
+* -----------------------
+* Alerts
+* ----------------------- */
+.alert{
+    @apply p-4 text-base rounded-lg w-full;
+}
+.alerts {
+    @apply flex flex-col w-full;
+}
+
+.alert-danger{
+    @apply text-red-700 bg-red-100 dark:bg-red-200 dark:text-red-800;
+}
+.alert-info {
+    @apply text-blue-700 bg-blue-100 dark:bg-blue-200 dark:text-blue-800;
+}
+.alert-warn {
+    @apply text-orange-700 bg-orange-100 dark:bg-orange-200 dark:text-orange-800;
+}
+.alert-success {
+    @apply text-green-700 bg-green-100 dark:bg-green-200 dark:text-green-800;
+}
+
+/** 
+* -----------------------
+* Containers
+* ----------------------- */
+.container {
+    @apply max-w-7xl;
+}
+
+
+.header nav a{
+    @apply relative font-medium leading-6;
+    @apply hover:text-gray-900;
+    @apply text-gray-600 transition duration-150 ease-out;
+}
+
+
+/** 
+* -------------------------
+* Menu
+* ------------------------- */
+*[data-menu]{
+    @apply relative;
+}
+*[data-menu-dropdown] {
+    @apply absolute opacity-0;
+    transform: scaleX(0) scaleY(0);
+    transition-timing-function: cubic-bezier(0.4, 0, 1, 1);
+    transition-duration: 75ms;
+    /* top: 3.25rem; */
+}
+*[data-menu]:focus-within > *[data-menu-dropdown],
+*[data-menu-dropdown]:hover {
+    @apply opacity-100 mt-4;
+    transform: scaleX(1) scaleY(1);
+    transition-timing-function: cubic-bezier(0, 0, 0.2, 1);
+    transition-duration: 100ms;
+    right: 0;
+}
+
+
+
+/** 
+* -------------------------
+* Auth
+* ------------------------- */
+
+.auth__menu > a{
+    @apply w-auto;
+}
+.auth__form {
+    @apply w-full flex justify-center;
+}
+.auth__content{
+    @apply flex flex-col items-start justify-start w-full h-full p-10 md:px-24 max-w-2xl;
+}
+
+.auth__content .btn,.auth__content input{
+    @apply py-3;
+}

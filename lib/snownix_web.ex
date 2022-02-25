@@ -23,6 +23,7 @@ defmodule SnownixWeb do
 
       import Plug.Conn
       import SnownixWeb.Gettext
+      import SnownixWeb.ErrorHelpers
       alias SnownixWeb.Router.Helpers, as: Routes
     end
   end

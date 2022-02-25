@@ -1,1 +1,10 @@
+<.live_component 
+    id="header" 
+    current_user={@current_user}
+    module={SnownixWeb.SharedLive.HeaderComponent} />
+<main class="container mx-auto h-full">
 <%= @inner_content %>
+</main>
+<.live_component 
+    id="footer" 
+    module={SnownixWeb.SharedLive.FooterComponent} />

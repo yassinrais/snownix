@@ -1,0 +1,11 @@
+<div class="alerts">
+    <%= if message = live_flash(@flash, :info) do %>
+        <div class="alert alert-info"><%= message %></div>
+    <% end %>
+    <%= if message = live_flash(@flash, :error) do %>
+        <div class="alert alert-danger"><%= message %></div>
+    <% end %>
+    <%= if message = live_flash(@flash, :success) do %>
+        <div class="alert alert-success"><%= message %></div>
+    <% end %>
+</div>

@@ -3,6 +3,8 @@ defmodule SnownixWeb.ErrorHelpers do
   Conveniences for translating and building error messages.
   """
 
+  import Phoenix.Controller, only: [put_flash: 3]
+
   use Phoenix.HTML
 
   @doc """
@@ -14,6 +16,19 @@ defmodule SnownixWeb.ErrorHelpers do
         class: "invalid-feedback",
         phx_feedback_for: input_name(form, field)
       )
+    end)
+  end
+
+  def put_changeset_errors(conn, changeset) do
+    translate_errors(changeset)
+    |> Enum.reduce(conn, fn error, acc ->
+      acc |> put_flash(:error, error |> String.capitalize())
+    end)
+  end
+
+  def translate_errors(%{errors: errors} = _changeset) do
+    Enum.map(errors, fn {field, error} ->
+      Atom.to_string(field) <> " " <> translate_error(error)
     end)
   end
 
