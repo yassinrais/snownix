@@ -1,7 +1,9 @@
 defmodule SnownixWeb.IndexLive.Index do
   use SnownixWeb, :live_view
 
-  def mount(_params, _, socket) do
-    {:ok, socket}
+  def mount(_, _, socket) do
+    {:ok,
+     socket
+     |> assign(:page_title, "Home")}
   end
 end

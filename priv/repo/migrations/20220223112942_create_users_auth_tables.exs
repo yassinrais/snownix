@@ -4,8 +4,10 @@ defmodule Snownix.Repo.Migrations.CreateUsersAuthTables do
   def change do
     execute "CREATE EXTENSION IF NOT EXISTS citext", ""
 
-    create table(:users) do
-      add :username, :string, size: 50, null: false
+    create table(:users, primary_key: false) do
+      add :id, :uuid, primary_key: true
+
+      add :username, :citext, null: false
       add :email, :citext, null: false
       add :hashed_password, :string, null: false
 
@@ -27,7 +29,7 @@ defmodule Snownix.Repo.Migrations.CreateUsersAuthTables do
     create unique_index(:users, [:email])
 
     create table(:users_tokens) do
-      add :user_id, references(:users, on_delete: :delete_all), null: false
+      add :user_id, references(:users, type: :binary_id, on_delete: :delete_all), null: false
       add :token, :binary, null: false
       add :context, :string, null: false
       add :sent_to, :string

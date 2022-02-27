@@ -30,8 +30,15 @@ snownix-*.tar
 
 # Ignore digested assets cache.
 /priv/static/cache_manifest.json
+/priv/static/**/*.gz
+/priv/static/**/*-*.js
+/priv/static/**/*-*.txt
+/priv/static/**/*-*.ico
 
 # In case you use Node.js/npm, you want to ignore these.
 npm-debug.log
 /assets/node_modules/
 
+# Uploads
+/priv/static/uploads/avatars/**
+!/priv/static/uploads/avatars/.gitkeep

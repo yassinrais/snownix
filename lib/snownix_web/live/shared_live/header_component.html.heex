@@ -1,17 +1,17 @@
-<section class="header relative w-full px-8 text-gray-700  body-font">
-    <div class="flex flex-col flex-wrap items-center justify-between py-5 mx-auto md:flex-row container">
+<section class="header relative text-gray-700  body-font">
+    <div class="flex flex-col flex-wrap items-center justify-between py-4 mx-auto md:flex-row container">
         <a class="relative z-10 flex items-center w-auto text-2xl font-extrabold leading-none text-black select-none">Snownix</a>
 
-        <nav class="top-0 left-0 z-0 flex items-center justify-center w-full h-full py-5 -ml-0 space-x-5 text-base md:-ml-5 md:py-0 md:absolute">
-            <%= live_redirect "Home", to: Routes.index_index_path(@socket, :index) %>
-            <a >
+        <nav class="top-0 left-0 z-0 flex items-center justify-center w-full h-full -ml-0 space-x-5 text-base md:-ml-5 md:py-0 md:absolute py-4 md:py-0">
+            <%= live_redirect gettext("Home"), to: Routes.index_index_path(@socket, :index) %>
+            <a>
                 Engineering
             </a>
-            <a >
+            <a>
                 <span class="block">Projects</span>
             </a>
-            <a >
-                <span class="block">Contact</span>
+            <a>
+                <span class="block"><%= gettext("Contact") %></span>
             </a>
         </nav>
 
@@ -22,8 +22,8 @@
                     current_user={@current_user}
                     module={SnownixWeb.SharedLive.UserMenuComponent}/>
             <% else %>
-                <%= live_redirect "Sign in", to: Routes.auth_login_path(@socket, :login) , class: "btn"%>
-                <%= live_redirect "Sign up", to: Routes.auth_register_path(@socket, :register), class: "btn primary"  %>
+                <%= live_redirect gettext("Sign in"), to: Routes.auth_login_path(@socket, :login) , class: "btn"%>
+                <%= live_redirect gettext("Sign up"), to: Routes.auth_register_path(@socket, :register), class: "btn primary"  %>
             <% end %>
         </div>
     </div>

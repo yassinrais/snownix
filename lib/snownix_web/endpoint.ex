@@ -20,7 +20,10 @@ defmodule SnownixWeb.Endpoint do
     at: "/",
     from: :snownix,
     gzip: false,
-    only: ~w(assets fonts images favicon.ico robots.txt)
+    only: ~w(
+      assets fonts images favicon.ico robots.txt sw.js uploads cache_manifest.json
+      apple-touch-icon.png favicon-32x32.png favicon-16x16.png site.webmanifest
+    )
 
   # Code reloading can be explicitly enabled under the
   # :code_reloader configuration of your endpoint.

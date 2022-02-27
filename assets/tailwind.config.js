@@ -1,4 +1,5 @@
 module.exports = {
+  darkMode: "class",
   content: [
     './js/**/*.js',
     '../lib/*_web.ex',
@@ -16,7 +17,7 @@ module.exports = {
       }
     },
     fontFamily: {
-      primary: ['Raleway', 'sans-serif']
+      primary: ['Inter', 'Raleway', 'sans-serif']
     }
   },
   plugins: [],

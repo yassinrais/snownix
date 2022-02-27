@@ -13,6 +13,7 @@ defmodule Snownix.AccountsTest do
 
     test "returns the user if the email exists" do
       %{id: id} = user = user_fixture()
+
       assert %User{id: ^id} = Accounts.get_user_by_email(user.email)
     end
   end
@@ -36,9 +37,15 @@ defmodule Snownix.AccountsTest do
   end
 
   describe "get_user!/1" do
+    test "raises if id is not valid uuid" do
+      assert_raise Ecto.Query.CastError, fn ->
+        Accounts.get_user!(1)
+      end
+    end
+
     test "raises if id is invalid" do
       assert_raise Ecto.NoResultsError, fn ->
-        Accounts.get_user!(-1)
+        Accounts.get_user!("06ceead8-6160-45e1-8ec0-8a4c2b42a4a3")
       end
     end
 
@@ -53,15 +60,18 @@ defmodule Snownix.AccountsTest do
       {:error, changeset} = Accounts.register_user(%{})
 
       assert %{
+               username: ["can't be blank"],
                password: ["can't be blank"],
                email: ["can't be blank"]
              } = errors_on(changeset)
     end
 
     test "validates email and password when given" do
-      {:error, changeset} = Accounts.register_user(%{email: "not valid", password: "not valid"})
+      {:error, changeset} =
+        Accounts.register_user(%{email: "not valid", password: "not valid", username: "not valid"})
 
       assert %{
+               username: ["username must be alphanumeric"],
                email: ["must have the @ sign and no spaces"],
                password: ["should be at least 12 character(s)"]
              } = errors_on(changeset)
@@ -69,9 +79,23 @@ defmodule Snownix.AccountsTest do
 
     test "validates maximum values for email and password for security" do
       too_long = String.duplicate("db", 100)
-      {:error, changeset} = Accounts.register_user(%{email: too_long, password: too_long})
+
+      {:error, changeset} =
+        Accounts.register_user(%{email: too_long, password: too_long, username: too_long})
+
+      assert "should be at most 40 character(s)" in errors_on(changeset).username
       assert "should be at most 160 character(s)" in errors_on(changeset).email
       assert "should be at most 72 character(s)" in errors_on(changeset).password
+    end
+
+    test "validates username uniqueness" do
+      %{username: username} = user_fixture()
+      {:error, changeset} = Accounts.register_user(%{username: username})
+      assert "has already been taken" in errors_on(changeset).username
+
+      # Now try with the upper cased username too, to check that username case is ignored.
+      {:error, changeset} = Accounts.register_user(%{username: String.upcase(username)})
+      assert "has already been taken" in errors_on(changeset).username
     end
 
     test "validates email uniqueness" do
@@ -86,8 +110,13 @@ defmodule Snownix.AccountsTest do
 
     test "registers users with a hashed password" do
       email = unique_user_email()
-      {:ok, user} = Accounts.register_user(valid_user_attributes(email: email))
+      username = unique_username()
+
+      {:ok, user} =
+        Accounts.register_user(valid_user_attributes(email: email, username: username))
+
       assert user.email == email
+      assert user.username == username
       assert is_binary(user.hashed_password)
       assert is_nil(user.confirmed_at)
       assert is_nil(user.password)
@@ -97,22 +126,24 @@ defmodule Snownix.AccountsTest do
   describe "change_user_registration/2" do
     test "returns a changeset" do
       assert %Ecto.Changeset{} = changeset = Accounts.change_user_registration(%User{})
-      assert changeset.required == [:password, :email]
+      assert changeset.required == [:password, :email, :username]
     end
 
     test "allows fields to be set" do
       email = unique_user_email()
+      username = unique_username()
       password = valid_user_password()
 
       changeset =
         Accounts.change_user_registration(
           %User{},
-          valid_user_attributes(email: email, password: password)
+          valid_user_attributes(email: email, password: password, username: username)
         )
 
       assert changeset.valid?
       assert get_change(changeset, :email) == email
       assert get_change(changeset, :password) == password
+      assert get_change(changeset, :username) == username
       assert is_nil(get_change(changeset, :hashed_password))
     end
   end
@@ -394,7 +425,7 @@ defmodule Snownix.AccountsTest do
     end
 
     test "confirms the email with a valid token", %{user: user, token: token} do
-      assert {:ok, confirmed_user} = Accounts.confirm_user(token)
+      assert {:ok, confirmed_user} = Accounts.confirm_user(token, user.email)
       assert confirmed_user.confirmed_at
       assert confirmed_user.confirmed_at != user.confirmed_at
       assert Repo.get!(User, user.id).confirmed_at
@@ -402,14 +433,20 @@ defmodule Snownix.AccountsTest do
     end
 
     test "does not confirm with invalid token", %{user: user} do
-      assert Accounts.confirm_user("oops") == :error
+      assert Accounts.confirm_user("oops", "oops") == :error
       refute Repo.get!(User, user.id).confirmed_at
       assert Repo.get_by(UserToken, user_id: user.id)
     end
 
     test "does not confirm email if token expired", %{user: user, token: token} do
       {1, nil} = Repo.update_all(UserToken, set: [inserted_at: ~N[2020-01-01 00:00:00]])
-      assert Accounts.confirm_user(token) == :error
+      assert Accounts.confirm_user(token, user.email) == :error
+      refute Repo.get!(User, user.id).confirmed_at
+      assert Repo.get_by(UserToken, user_id: user.id)
+    end
+
+    test "does not confirm email if email is wrong", %{user: user, token: token} do
+      assert Accounts.confirm_user(token, "not-correct-email@example.com") == :error
       refute Repo.get!(User, user.id).confirmed_at
       assert Repo.get_by(UserToken, user_id: user.id)
     end

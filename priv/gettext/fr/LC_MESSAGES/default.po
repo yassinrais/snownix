@@ -1,0 +1,120 @@
+## "msgid"s in this file come from POT (.pot) files.
+##
+## Do not add, change, or remove "msgid"s manually here as
+## they're tied to the ones in the corresponding POT file
+## (with the same domain).
+##
+## Use "mix gettext.extract --merge" or "mix gettext.merge"
+## to merge POT files into PO files.
+msgid ""
+msgstr ""
+"Language: fr\n"
+"Plural-Forms: nplurals=2\n"
+
+#, elixir-autogen, elixir-format
+#: lib/snownix_web/live/auth_live/login.ex:7
+#: lib/snownix_web/live/auth_live/login.html.heex:3
+#: lib/snownix_web/live/auth_live/register.html.heex:6
+#: lib/snownix_web/live/shared_live/header_component.html.heex:25
+msgid "Sign in"
+msgstr "Connexion"
+
+#, elixir-autogen, elixir-format
+#: lib/snownix_web/live/auth_live/confirm.ex:7
+msgid "Confirmation"
+msgstr "Confirmation"
+
+#, elixir-autogen, elixir-format
+#: lib/snownix_web/live/auth_live/login.html.heex:5
+msgid "Don’t have an account?"
+msgstr "Vous n'avez pas de compte ?"
+
+#, elixir-autogen, elixir-format
+#: lib/snownix_web/live/auth_live/login.html.heex:14
+msgid "Email Address"
+msgstr "Adresse e-mail"
+
+#, elixir-autogen, elixir-format
+#: lib/snownix_web/live/auth_live/forgot_password.ex:7
+msgid "Forgot password"
+msgstr "Mot de passe oublié"
+
+#, elixir-autogen, elixir-format
+#: lib/snownix_web/live/auth_live/login.html.heex:18
+#: lib/snownix_web/live/auth_live/login.html.heex:18
+#: lib/snownix_web/live/auth_live/register.html.heex:20
+msgid "Password"
+msgstr "Mot de passe"
+
+#, elixir-autogen, elixir-format
+#: lib/snownix_web/live/auth_live/reset_password.ex:7
+msgid "Reset Password"
+msgstr "Réinitialiser le mot de passe"
+
+#, elixir-autogen, elixir-format, fuzzy
+#: lib/snownix_web/live/auth_live/login.html.heex:6
+#: lib/snownix_web/live/auth_live/register.ex:7
+#: lib/snownix_web/live/auth_live/register.html.heex:3
+#: lib/snownix_web/live/shared_live/header_component.html.heex:26
+msgid "Sign up"
+msgstr "Inscription"
+
+#, elixir-autogen, elixir-format, fuzzy
+#: lib/snownix_web/live/auth_live/login.html.heex:27
+msgid "Forgot password?"
+msgstr "Mot de passe oublié"
+
+#, elixir-autogen, elixir-format
+#: lib/snownix_web/live/auth_live/login.html.heex:24
+msgid "Remember me"
+msgstr "Se souvenir de moi"
+
+#, elixir-autogen, elixir-format
+#: lib/snownix_web/live/auth_live/register.html.heex:5
+msgid "Already have an account?"
+msgstr "Vous disposez déjà d'un compte?"
+
+#, elixir-autogen, elixir-format
+#: lib/snownix_web/live/shared_live/header_component.html.heex:14
+msgid "Contact"
+msgstr "Contact"
+
+#, elixir-autogen, elixir-format
+#: lib/snownix_web/live/auth_live/register.html.heex:16
+msgid "Enter Your Email Address"
+msgstr "Saisissez votre adresse e-mail"
+
+#, elixir-autogen, elixir-format
+#: lib/snownix_web/live/shared_live/header_component.html.heex:6
+msgid "Home"
+msgstr "Accueil"
+
+#, elixir-autogen, elixir-format
+#: lib/snownix_web/live/auth_live/register.html.heex:25
+msgid "I agree to the"
+msgstr "J'accepte les"
+
+#, elixir-autogen, elixir-format
+#: lib/snownix_web/live/shared_live/user_menu_component.html.heex:27
+msgid "Log out"
+msgstr "Déconnexion"
+
+#, elixir-autogen, elixir-format
+#: lib/snownix_web/live/auth_live/register.html.heex:29
+msgid "Register"
+msgstr "S'inscrire"
+
+#, elixir-autogen, elixir-format
+#: lib/snownix_web/live/shared_live/user_menu_component.html.heex:22
+msgid "Settings"
+msgstr "Paramètres"
+
+#, elixir-autogen, elixir-format
+#: lib/snownix_web/live/auth_live/register.html.heex:25
+msgid "Terms and conditions"
+msgstr "Termes et conditions"
+
+#, elixir-autogen, elixir-format
+#: lib/snownix_web/live/auth_live/register.html.heex:13
+msgid "Username"
+msgstr "Nom d'utilisateur"

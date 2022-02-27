@@ -19,11 +19,14 @@
             </a>
         </li>
         <li>
-            <%= link "Settings", to: Routes.account_settings_path(SnownixWeb.Endpoint, :settings), class: "block py-2 px-4 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white" %>
+            <%= live_redirect gettext("Settings"), to: Routes.account_settings_path(SnownixWeb.Endpoint, :settings), 
+            class: "block py-2 px-4 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white" %>
         </li>
         </ul>
         <div class="py-1">
-            <%= link "Log out", to: Routes.user_session_path(SnownixWeb.Endpoint, :delete), class: "block py-2 px-4 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white", method: :delete %>
+            <%= link gettext("Log out"), to: Routes.user_session_path(SnownixWeb.Endpoint, :delete), 
+            class: "block py-2 px-4 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white", 
+            method: :delete %>
         </div>
     </div>
 </div>

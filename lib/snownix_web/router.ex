@@ -20,56 +20,51 @@ defmodule SnownixWeb.Router do
   ## Liveview routes
   live_session :default, on_mount: {SnownixWeb.InitAssigns, :user} do
     scope "/", SnownixWeb do
-      pipe_through :browser
+      pipe_through [:browser]
 
       live "/", IndexLive.Index, :index
+    end
 
-      scope "/auth" do
-        pipe_through [:redirect_if_user_is_authenticated]
+    scope "/account", SnownixWeb do
+      pipe_through [:browser, :require_authenticated_user]
 
-        live "/login", AuthLive.Login, :login
-        live "/register", AuthLive.Register, :register
-      end
+      live "/settings", AccountLive.Settings, :settings
+      live "/confirm", AuthLive.Reconfirm, :reconfirm
+      live "/confirm/:token", AuthLive.Confirm, :confirm
+    end
 
-      scope "/account" do
-        scope "/" do
-          pipe_through [:require_authenticated_user]
+    scope "/auth", SnownixWeb do
+      pipe_through [:browser, :redirect_if_user_is_authenticated]
 
-          live "/settings", AccountLive.Settings, :settings
-        end
-
-        scope "/confirm" do
-          live "/", AuthLive.Reconfirm, :reconfirm
-          live "/:token", AuthLive.Confirm, :confirm
-        end
-      end
+      live "/login", AuthLive.Login, :login
+      live "/register", AuthLive.Register, :register
+      live "/forgot-password", AuthLive.ForgotPassword, :forgot
+      live "/reset-password/:token", AuthLive.ResetPassword, :reset
     end
   end
 
   ## Controllers
-  scope "/", SnownixWeb do
+  scope "/auth", SnownixWeb do
+    pipe_through [:browser, :require_authenticated_user]
+
+    delete "/login", UserSessionController, :delete
+  end
+
+  scope "/auth", SnownixWeb do
+    pipe_through [:browser, :redirect_if_user_is_authenticated]
+
+    post "/login", UserSessionController, :create
+    post "/register", UserRegistrationController, :create
+    post "/forgot-password", UserResetPasswordController, :create
+    post "/reset-password/:token", UserResetPasswordController, :update
+  end
+
+  # Confirmation
+  scope "/account", SnownixWeb do
     pipe_through [:browser]
 
-    # Auth
-    scope "/auth" do
-      scope "/" do
-        pipe_through [:redirect_if_user_is_authenticated]
-
-        post "/login", UserSessionController, :create
-        post "/register", UserRegistrationController, :create
-      end
-
-      scope "/" do
-        pipe_through [:require_authenticated_user]
-        delete "/logout", UserSessionController, :delete
-      end
-    end
-
-    # Confirmation
-    scope "/account" do
-      post "/confirm", UserConfirmationController, :create
-      post "/confirm/:token", UserConfirmationController, :update
-    end
+    post "/confirm", UserConfirmationController, :create
+    post "/confirm/:token", UserConfirmationController, :update
   end
 
   # Other scopes may use custom stacks.

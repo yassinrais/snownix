@@ -2,18 +2,21 @@ defmodule Snownix.Accounts.User do
   use Ecto.Schema
   import Ecto.Changeset
 
+  @primary_key {:id, :binary_id, autogenerate: true}
+
   schema "users" do
     field :fullname, :string
     field :avatar, :string
 
     field :phone, :string
-    field :admin, :boolean, default: false
 
     field :username, :string
     field :email, :string
     field :password, :string, virtual: true, redact: true
     field :hashed_password, :string, redact: true
     field :confirmed_at, :naive_datetime
+
+    field :admin, :boolean, default: false
 
     timestamps()
   end
@@ -43,6 +46,18 @@ defmodule Snownix.Accounts.User do
     |> validate_password(opts)
   end
 
+  def login_changeset(user, attrs, opts \\ []) do
+    user
+    |> cast(attrs, [:email, :password])
+    |> validate_email()
+    |> validate_password(opts)
+  end
+
+  def avatar_changeset(user, attrs) do
+    user
+    |> cast(attrs, [:avatar])
+  end
+
   defp validate_email(changeset) do
     changeset
     |> validate_required([:email])
@@ -55,8 +70,9 @@ defmodule Snownix.Accounts.User do
   defp validate_username(changeset) do
     changeset
     |> validate_required([:username])
-    |> validate_format(:username, ~r/^[a-zA-Z0-9-_]+$/, message: "Username should be alphanumeric")
+    |> validate_format(:username, ~r/^[a-zA-Z0-9-_]+$/, message: "username must be alphanumeric")
     |> unsafe_validate_unique(:username, Snownix.Repo)
+    |> validate_length(:username, max: 40)
     |> unique_constraint(:username)
   end
 

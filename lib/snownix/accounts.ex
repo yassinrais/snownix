@@ -5,6 +5,7 @@ defmodule Snownix.Accounts do
 
   import Ecto.Query, warn: false
   alias Snownix.Repo
+  alias Snownix.Avatar
 
   alias Snownix.Accounts.{User, UserToken, UserNotifier}
 
@@ -93,6 +94,19 @@ defmodule Snownix.Accounts do
     User.registration_changeset(user, attrs, hash_password: false)
   end
 
+  @doc """
+  Returns an `%Ecto.Changeset{}` for tracking user changes.
+
+  ## Examples
+
+      iex> change_user_login(user)
+      %Ecto.Changeset{data: %User{}}
+
+  """
+  def change_user_login(%User{} = user, attrs \\ %{}) do
+    User.login_changeset(user, attrs, hash_password: false)
+  end
+
   ## Settings
 
   @doc """
@@ -126,6 +140,38 @@ defmodule Snownix.Accounts do
     |> User.email_changeset(attrs)
     |> User.validate_current_password(password)
     |> Ecto.Changeset.apply_action(:update)
+  end
+
+  @doc """
+  Updates the user avatar.
+
+  The user avatar is updated .
+  The old avatar is deleted
+  The confirmed_at date is also updated to the current time.
+  """
+  def update_user_avatar(user, avatar) do
+    changeset =
+      user
+      |> User.avatar_changeset(%{avatar: avatar})
+
+    Avatar.rm_user_avatar(user.avatar)
+
+    Ecto.Multi.new()
+    |> Ecto.Multi.update(:user, changeset)
+    |> Repo.transaction()
+    |> case do
+      {:ok, %{user: user}} -> {:ok, user}
+      {:error, :user, changeset, _} -> {:error, changeset}
+    end
+  end
+
+  @doc """
+  Delete the user avatar.
+
+  The update_user_avatar is called with avatar nil value
+  """
+  def delete_user_avatar(user) do
+    update_user_avatar(user, nil)
   end
 
   @doc """
