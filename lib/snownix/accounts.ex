@@ -234,6 +234,20 @@ defmodule Snownix.Accounts do
   end
 
   @doc """
+  Returns an `%Ecto.Changeset{}` for changing the user password with email valdiation.
+
+  ## Examples
+
+      iex> change_user_password_with_email(user)
+      %Ecto.Changeset{data: %User{}}
+
+  """
+  def change_user_password_with_email(user, attrs \\ %{}) do
+    User.password_changeset(user, attrs, hash_password: false)
+    |> User.validate_email_changeset(attrs)
+  end
+
+  @doc """
   Updates the user password.
 
   ## Examples
@@ -336,6 +350,19 @@ defmodule Snownix.Accounts do
     end
   end
 
+  @doc """
+  Returns an `%Ecto.Changeset{}` for changing the user email.
+
+  ## Examples
+
+      iex> change_user_confirm_email(user)
+      %Ecto.Changeset{data: %User{}}
+
+  """
+  def change_user_confirm_email(user, attrs \\ %{}) do
+    User.validate_email_changeset(user, attrs)
+  end
+
   defp confirm_user_multi(user) do
     Ecto.Multi.new()
     |> Ecto.Multi.update(:user, User.confirm_changeset(user))
@@ -379,6 +406,19 @@ defmodule Snownix.Accounts do
     else
       _ -> nil
     end
+  end
+
+  @doc """
+  Returns an `%Ecto.Changeset{}` for changing the user email.
+
+  ## Examples
+
+      iex> change_user_reset_email(user)
+      %Ecto.Changeset{data: %User{}}
+
+  """
+  def change_user_reset_email(user, attrs \\ %{}) do
+    User.validate_email_changeset(user, attrs)
   end
 
   @doc """

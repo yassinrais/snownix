@@ -58,16 +58,6 @@ defmodule SnownixWeb.Router do
 
     post "/login", UserSessionController, :create
     post "/register", UserRegistrationController, :create
-    post "/forgot-password", UserResetPasswordController, :create
-    post "/reset-password/:token", UserResetPasswordController, :update
-  end
-
-  # Confirmation
-  scope "/account", SnownixWeb do
-    pipe_through [:browser]
-
-    post "/confirm", UserConfirmationController, :create
-    post "/confirm/:token", UserConfirmationController, :update
   end
 
   # Other scopes may use custom stacks.

@@ -42,14 +42,14 @@ defmodule Snownix.Accounts.User do
     user
     |> cast(attrs, [:email, :password, :username])
     |> validate_username()
-    |> validate_email()
+    |> validate_email(attrs)
     |> validate_password(opts)
   end
 
   def login_changeset(user, attrs, opts \\ []) do
     user
     |> cast(attrs, [:email, :password])
-    |> validate_email()
+    |> validate_email(attrs)
     |> validate_password(opts)
   end
 
@@ -58,13 +58,19 @@ defmodule Snownix.Accounts.User do
     |> cast(attrs, [:avatar])
   end
 
-  defp validate_email(changeset) do
+  defp validate_email(changeset, attrs) do
     changeset
+    |> validate_email_changeset(attrs)
+    |> unsafe_validate_unique(:email, Snownix.Repo)
+    |> unique_constraint(:email)
+  end
+
+  def validate_email_changeset(changeset, attrs) do
+    changeset
+    |> cast(attrs, [:email])
     |> validate_required([:email])
     |> validate_format(:email, ~r/^[^\s]+@[^\s]+$/, message: "must have the @ sign and no spaces")
     |> validate_length(:email, max: 160)
-    |> unsafe_validate_unique(:email, Snownix.Repo)
-    |> unique_constraint(:email)
   end
 
   defp validate_username(changeset) do
@@ -109,7 +115,7 @@ defmodule Snownix.Accounts.User do
   def email_changeset(user, attrs) do
     user
     |> cast(attrs, [:email])
-    |> validate_email()
+    |> validate_email(attrs)
     |> case do
       %{changes: %{email: _}} = changeset -> changeset
       %{} = changeset -> add_error(changeset, :email, "did not change")
