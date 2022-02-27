@@ -18,7 +18,7 @@ defmodule SnownixWeb.UserResetPasswordController do
       :info,
       "If your email is in our system, you will receive instructions to reset your password shortly."
     )
-    |> redirect(to: "/")
+    |> redirect(to: Routes.auth_login_path(conn, :login))
   end
 
   # Do not log in the user after reset password to avoid a

@@ -23,23 +23,26 @@ defmodule SnownixWeb.Router do
       pipe_through [:browser]
 
       live "/", IndexLive.Index, :index
-    end
 
-    scope "/account", SnownixWeb do
-      pipe_through [:browser, :require_authenticated_user]
+      scope "/account" do
+        live "/confirm", AuthLive.Reconfirm, :reconfirm
+        live "/confirm/:token", AuthLive.Confirm, :confirm
+      end
 
-      live "/settings", AccountLive.Settings, :settings
-      live "/confirm", AuthLive.Reconfirm, :reconfirm
-      live "/confirm/:token", AuthLive.Confirm, :confirm
-    end
+      scope "/account" do
+        pipe_through [:require_authenticated_user]
 
-    scope "/auth", SnownixWeb do
-      pipe_through [:browser, :redirect_if_user_is_authenticated]
+        live "/settings", AccountLive.Settings, :settings
+      end
 
-      live "/login", AuthLive.Login, :login
-      live "/register", AuthLive.Register, :register
-      live "/forgot-password", AuthLive.ForgotPassword, :forgot
-      live "/reset-password/:token", AuthLive.ResetPassword, :reset
+      scope "/auth" do
+        pipe_through [:redirect_if_user_is_authenticated]
+
+        live "/login", AuthLive.Login, :login
+        live "/register", AuthLive.Register, :register
+        live "/forgot-password", AuthLive.ForgotPassword, :forgot
+        live "/reset-password/:token", AuthLive.ResetPassword, :reset
+      end
     end
   end
 

@@ -1,6 +1,6 @@
 <section class="auth__form">
     <div class="auth__content">
-        <h4 class="w-full text-3xl font-bold"><%= gettext "Confirm my account" %></h4>
+        <h1 class="w-full text-3xl font-bold"><%= gettext "Confirm account" %></h1>
         <p class="text-lg text-low mb-2">
             <%= gettext("You already confirmed your account?") %>
             <%= live_patch gettext("Sign in"), to: Routes.auth_login_path(@socket, :login), class: "text-primary underline"  %>
@@ -14,7 +14,7 @@
             </div>
        
             <div>
-              <button type="submit" class="btn dark"><%= gettext "Confirm my account" %></button>
+              <button type="submit" class="btn primary"><%= gettext "Confirm my account" %></button>
             </div>
         <% end %>
     </div>

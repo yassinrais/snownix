@@ -1,6 +1,6 @@
 <section class="auth__form">
     <div class="auth__content">
-        <h4 class="w-full text-3xl font-bold"><%= gettext "Sign up" %></h4>
+        <h1 class="w-full text-3xl font-bold"><%= gettext "Sign up" %></h1>
         <p class="text-lg text-low mb-2">
             <%= gettext "Already have an account?" %>  
             <%= live_patch gettext("Sign in"), to: Routes.auth_login_path(@socket, :login)  %>
