@@ -13,7 +13,11 @@ config :snownix,
 # Configures the endpoint
 config :snownix, SnownixWeb.Endpoint,
   url: [host: "localhost"],
-  render_errors: [view: SnownixWeb.ErrorView, accepts: ~w(html json), layout: false],
+  render_errors: [
+    view: SnownixWeb.ErrorView,
+    accepts: ~w(html json),
+    layout: {SnownixWeb.LayoutView, "root.html"}
+  ],
   pubsub_server: Snownix.PubSub,
   live_view: [signing_salt: "y77EDEzc"]
 
