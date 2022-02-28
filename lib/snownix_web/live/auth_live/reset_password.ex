@@ -17,7 +17,7 @@ defmodule SnownixWeb.AuthLive.ResetPassword do
       socket
       |> assign(:user, user)
       |> assign(:token, token)
-      |> assign(:changeset, Accounts.change_user_password(%Accounts.User{}))
+      |> assign(:changeset, Accounts.user_password_changeset(%Accounts.User{}))
     else
       socket
       |> put_flash(:error, "Reset password link is invalid or it has expired.")
@@ -28,7 +28,7 @@ defmodule SnownixWeb.AuthLive.ResetPassword do
   def handle_event("validate", %{"user" => user_params}, socket) do
     changeset =
       %Accounts.User{}
-      |> Accounts.change_user_password_with_email(user_params)
+      |> Accounts.user_password_with_email_changeset(user_params)
       |> Map.put(:action, :validate)
 
     {:noreply, socket |> assign(:changeset, changeset)}

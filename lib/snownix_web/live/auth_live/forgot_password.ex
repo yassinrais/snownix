@@ -10,7 +10,7 @@ defmodule SnownixWeb.AuthLive.ForgotPassword do
       |> assign(:page_title, gettext("Forgot Password"))
       |> assign(
         :changeset,
-        Accounts.change_user_reset_email(%Accounts.User{})
+        Accounts.user_email_changeset(%Accounts.User{})
       )
     }
   end
@@ -18,7 +18,7 @@ defmodule SnownixWeb.AuthLive.ForgotPassword do
   def handle_event("validate", %{"user" => user_params}, socket) do
     changeset =
       %Accounts.User{}
-      |> Accounts.change_user_reset_email(user_params)
+      |> Accounts.user_email_changeset(user_params)
       |> Map.put(:action, :validate)
 
     {:noreply, socket |> assign(:changeset, changeset)}
@@ -38,7 +38,9 @@ defmodule SnownixWeb.AuthLive.ForgotPassword do
      socket
      |> put_flash(
        :info,
-       "If your email is in our system, you will receive instructions to reset your password shortly."
+       gettext(
+         "If your email is in our system, you will receive instructions to reset your password shortly."
+       )
      )
      |> redirect(to: Routes.auth_login_path(socket, :login))}
   end

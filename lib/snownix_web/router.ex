@@ -48,16 +48,14 @@ defmodule SnownixWeb.Router do
 
   ## Controllers
   scope "/auth", SnownixWeb do
-    pipe_through [:browser, :require_authenticated_user]
+    pipe_through [:browser]
 
-    delete "/login", UserSessionController, :delete
+    delete "/logout", UserSessionController, :delete
   end
 
   scope "/auth", SnownixWeb do
     pipe_through [:browser, :redirect_if_user_is_authenticated]
-
     post "/login", UserSessionController, :create
-    post "/register", UserRegistrationController, :create
   end
 
   # Other scopes may use custom stacks.
@@ -93,20 +91,4 @@ defmodule SnownixWeb.Router do
       forward "/mailbox", Plug.Swoosh.MailboxPreview
     end
   end
-
-  # scope "/", SnownixWeb do
-  #   pipe_through [:browser, :require_authenticated_user]
-
-  #   get "/users/settings", UserSettingsController, :edit
-  #   put "/users/settings", UserSettingsController, :update
-  #   get "/users/settings/confirm_email/:token", UserSettingsController, :confirm_email
-  # end
-
-  # get "/users/reset_password", UserResetPasswordController, :new
-  # post "/users/reset_password", UserResetPasswordController, :create
-  # get "/users/reset_password/:token", UserResetPasswordController, :edit
-  # put "/users/reset_password/:token", UserResetPasswordController, :update
-  # get "/users/settings", UserSettingsController, :edit
-  # put "/users/settings", UserSettingsController, :update
-  # get "/users/settings/confirm_email/:token", UserSettingsController, :confirm_email
 end

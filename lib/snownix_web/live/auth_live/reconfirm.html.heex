@@ -1,9 +1,9 @@
 <section class="w-full flex justify-center">
     <div class="flex flex-col items-start justify-start w-full h-full p-10 lg:p-16 xl:p-24 max-w-2xl">
-        <h1 class="w-full text-3xl font-bold">Resend confirmation instructions</h1>
+        <h1 class="w-full text-3xl font-bold"><%= gettext "Resend confirmation instructions" %></h1>
         <p class="text-lg text-low mb-2">
-            You already confirmed your account?  
-            <%= live_patch "Sign in", to: Routes.auth_reconfirm_path(@socket, :reconfirm), class: "text-primary underline"  %>
+            <%= gettext "You already confirmed your account?" %>  
+            <%= live_patch gettext("Sign in"), to: Routes.auth_reconfirm_path(@socket, :reconfirm), class: "text-primary underline"  %>
         </p>
         <.live_component module={SnownixWeb.SharedLive.AlertsComponent} flash={@flash} id="register-alerts" />
 

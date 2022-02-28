@@ -8,15 +8,27 @@ defmodule SnownixWeb.AuthLive.Confirm do
       :ok,
       socket
       |> assign(:page_title, gettext("Confirm"))
-      |> assign(:token, token)
-      |> assign(changeset: Accounts.change_user_reset_email(%Accounts.User{}))
+      |> get_user_by_confirm_account_token(token)
     }
+  end
+
+  defp get_user_by_confirm_account_token(socket, token) do
+    if user = Accounts.get_user_by_confirm_account_token(token) do
+      socket
+      |> assign(:user, user)
+      |> assign(:token, token)
+      |> assign(changeset: Accounts.user_email_changeset(%Accounts.User{}))
+    else
+      socket
+      |> put_flash(:error, "Confirm link is invalid or it has expired.")
+      |> redirect(to: Routes.auth_login_path(socket, :login))
+    end
   end
 
   def handle_event("validate", %{"user" => user_params}, socket) do
     changeset =
       %Accounts.User{}
-      |> Accounts.change_user_reset_email(user_params)
+      |> Accounts.user_email_changeset(user_params)
       |> Map.put(:action, :validate)
 
     {:noreply, socket |> assign(:changeset, changeset)}

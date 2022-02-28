@@ -123,10 +123,10 @@ defmodule Snownix.AccountsTest do
     end
   end
 
-  describe "change_user_registration/2" do
+  describe "user_register_changeset/2" do
     test "returns a changeset" do
-      assert %Ecto.Changeset{} = changeset = Accounts.change_user_registration(%User{})
-      assert changeset.required == [:password, :email, :username]
+      assert %Ecto.Changeset{} = changeset = Accounts.user_register_changeset(%User{})
+      assert changeset.required == [:username, :email, :password]
     end
 
     test "allows fields to be set" do
@@ -135,7 +135,7 @@ defmodule Snownix.AccountsTest do
       password = valid_user_password()
 
       changeset =
-        Accounts.change_user_registration(
+        Accounts.user_register_changeset(
           %User{},
           valid_user_attributes(email: email, password: password, username: username)
         )
@@ -148,9 +148,9 @@ defmodule Snownix.AccountsTest do
     end
   end
 
-  describe "change_user_email/2" do
+  describe "user_email_changeset/2" do
     test "returns a user changeset" do
-      assert %Ecto.Changeset{} = changeset = Accounts.change_user_email(%User{})
+      assert %Ecto.Changeset{} = changeset = Accounts.user_email_changeset(%User{})
       assert changeset.required == [:email]
     end
   end
@@ -267,15 +267,15 @@ defmodule Snownix.AccountsTest do
     end
   end
 
-  describe "change_user_password/2" do
+  describe "user_password_changeset/2" do
     test "returns a user changeset" do
-      assert %Ecto.Changeset{} = changeset = Accounts.change_user_password(%User{})
+      assert %Ecto.Changeset{} = changeset = Accounts.user_password_changeset(%User{})
       assert changeset.required == [:password]
     end
 
     test "allows fields to be set" do
       changeset =
-        Accounts.change_user_password(%User{}, %{
+        Accounts.user_password_changeset(%User{}, %{
           "password" => "new valid password"
         })
 

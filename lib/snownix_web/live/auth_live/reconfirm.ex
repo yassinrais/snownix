@@ -10,7 +10,7 @@ defmodule SnownixWeb.AuthLive.Reconfirm do
       |> assign(:page_title, gettext("Resend Confirmation Instructions"))
       |> assign(
         :changeset,
-        Accounts.change_user_confirm_email(%Accounts.User{})
+        Accounts.user_email_changeset(%Accounts.User{})
       )
     }
   end
@@ -18,7 +18,7 @@ defmodule SnownixWeb.AuthLive.Reconfirm do
   def handle_event("validate", %{"user" => user_params}, socket) do
     changeset =
       %Accounts.User{}
-      |> Accounts.change_user_confirm_email(user_params)
+      |> Accounts.user_email_changeset(user_params)
       |> Map.put(:action, :validate)
 
     {:noreply, socket |> assign(:changeset, changeset)}

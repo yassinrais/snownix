@@ -39,17 +39,26 @@ defmodule Snownix.Accounts.User do
       Defaults to `true`.
   """
   def registration_changeset(user, attrs, opts \\ []) do
-    user
-    |> cast(attrs, [:email, :password, :username])
-    |> validate_username()
-    |> validate_email(attrs)
-    |> validate_password(opts)
+    uniq_email? = Keyword.get(opts, :uniq_email, true)
+    uniq_username? = Keyword.get(opts, :uniq_username, true)
+
+    changeset =
+      user
+      |> cast(attrs, [:email, :password, :username])
+      |> validate_password(opts)
+
+    changeset =
+      if uniq_email?,
+        do: validate_email(changeset, attrs),
+        else: changeset |> validate_email_changeset(attrs)
+
+    if uniq_username?, do: validate_username(changeset), else: changeset
   end
 
   def login_changeset(user, attrs, opts \\ []) do
     user
     |> cast(attrs, [:email, :password])
-    |> validate_email(attrs)
+    |> validate_email_changeset(attrs)
     |> validate_password(opts)
   end
 
@@ -60,6 +69,7 @@ defmodule Snownix.Accounts.User do
 
   defp validate_email(changeset, attrs) do
     changeset
+    |> cast(attrs, [:email])
     |> validate_email_changeset(attrs)
     |> unsafe_validate_unique(:email, Snownix.Repo)
     |> unique_constraint(:email)

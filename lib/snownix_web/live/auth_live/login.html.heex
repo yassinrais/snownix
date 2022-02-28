@@ -7,15 +7,18 @@
         </p>
         <.live_component module={SnownixWeb.SharedLive.AlertsComponent} flash={@flash} id="login-alerts" />
 
-        <%= form_for :user, Routes.user_session_path(@socket, :create), [as: :user, class: "relative w-full space-y-6"
-            ], fn f -> %>
-            <div class="relative">
-                <%= label f, :email, gettext("Email") ,class: "font-medium text-gray-900" %>
-                <%= email_input f, :email, placeholder: gettext("Email Address") , required: true %>
+        <.form let={f} for={@changeset} 
+            phx-submit="create" phx-change="validate" class="relative w-full space-y-4" 
+            phx-trigger-action={@trigger_submit} action={Routes.user_session_path(@socket, :create)}>
+              <div class="relative">
+                <%= label f, :email, gettext("Email") , class: "font-medium text-gray-900" %>
+                <%= email_input f, :email, placeholder: gettext("Enter Your Email Address"), required: true, phx_debounce: "blur" %>
+                <%= error_tag f, :email, 1 %>
             </div>
             <div class="relative">
-                <%= label f, :password, gettext("Password") ,class: "font-medium text-gray-900" %>
-                <%= password_input f, :password, placeholder: gettext("Password") , required: true %>
+                <%= label f, :password, gettext("Password") , class: "font-medium text-gray-900" %>
+                <%= password_input f, :password, placeholder: gettext("Password"), required: true, value: input_value(f, :password), phx_debounce: "blur" %>
+                <%= error_tag f, :password, 1 %>
             </div>
             <div class="flex flex-col md:flex-row justify-between space-y-2 md:space-y-0">
                 <div class="checkbox">
@@ -27,8 +30,8 @@
             <%= live_patch gettext("Forgot password?") , to: Routes.auth_forgot_password_path(@socket, :forgot), class: "text-sm" %>
             </div>
             <div>
-                <button type="submit" class="btn primary">Login</button>
+              <button type="submit" class="btn primary"><%= gettext("Login") %></button>
             </div>
-        <% end %>
+        </.form>
     </div>
 </section>

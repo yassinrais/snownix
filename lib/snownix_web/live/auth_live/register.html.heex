@@ -6,18 +6,22 @@
             <%= live_patch gettext("Sign in"), to: Routes.auth_login_path(@socket, :login)  %>
         </p>
         <.live_component module={SnownixWeb.SharedLive.AlertsComponent} flash={@flash} id="register-alerts" />
-
-        <%= form_for :user, Routes.user_registration_path(@socket, :create), [as: :user, class: "relative w-full space-y-4"],  fn f -> %>
+        
+        <.form let={f} for={@changeset} phx-submit="create" phx-change="validate" class="relative w-full space-y-4">
             <div class="relative">
                 <%= label f, :username, gettext("Username") , class: "font-medium text-gray-900" %>
-                <%= text_input f, :username, placeholder: gettext("Username"), required: true %>
-            </div><div class="relative">
-                <%= label f, :email, gettext("Email") , class: "font-medium text-gray-900" %>
-                <%= email_input f, :email, placeholder: gettext("Enter Your Email Address"), required: true %>
+                <%= text_input f, :username, placeholder: gettext("Username"), required: true, phx_debounce: "blur" %>
+                <%= error_tag f, :username, 1 %>
             </div>
             <div class="relative">
-                <%= label f, :password, gettext("Password") ,class: "font-medium text-gray-900" %>
-                <%= password_input f, :password, placeholder: gettext("Password"), required: true %>
+                <%= label f, :email, gettext("Email") , class: "font-medium text-gray-900" %>
+                <%= email_input f, :email, placeholder: gettext("Enter Your Email Address"), required: true, phx_debounce: "blur" %>
+                <%= error_tag f, :email, 1 %>
+            </div>
+            <div class="relative">
+                <%= label f, :password, gettext("Password") , class: "font-medium text-gray-900" %>
+                <%= password_input f, :password, placeholder: gettext("Password"), required: true, value: input_value(f, :password), phx_debounce: "blur" %>
+                <%= error_tag f, :password, 1 %>
             </div>
             <div class="checkbox">
                 <%= checkbox f, :terms , required: true %>
@@ -28,7 +32,7 @@
             <div>
               <button type="submit" class="btn primary"><%= gettext("Register") %></button>
             </div>
-        <% end %>
+        </.form>
     </div>
 </section>
 

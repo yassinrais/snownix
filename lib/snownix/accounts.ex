@@ -86,12 +86,16 @@ defmodule Snownix.Accounts do
 
   ## Examples
 
-      iex> change_user_registration(user)
+      iex> user_register_changeset(user)
       %Ecto.Changeset{data: %User{}}
 
   """
-  def change_user_registration(%User{} = user, attrs \\ %{}) do
-    User.registration_changeset(user, attrs, hash_password: false)
+  def user_register_changeset(%User{} = user, attrs \\ %{}, opts \\ []) do
+    User.registration_changeset(
+      user,
+      attrs,
+      [hash_password: false] ++ opts
+    )
   end
 
   @doc """
@@ -99,28 +103,15 @@ defmodule Snownix.Accounts do
 
   ## Examples
 
-      iex> change_user_login(user)
+      iex> user_login_changeset(user)
       %Ecto.Changeset{data: %User{}}
 
   """
-  def change_user_login(%User{} = user, attrs \\ %{}) do
+  def user_login_changeset(%User{} = user, attrs \\ %{}) do
     User.login_changeset(user, attrs, hash_password: false)
   end
 
   ## Settings
-
-  @doc """
-  Returns an `%Ecto.Changeset{}` for changing the user email.
-
-  ## Examples
-
-      iex> change_user_email(user)
-      %Ecto.Changeset{data: %User{}}
-
-  """
-  def change_user_email(user, attrs \\ %{}) do
-    User.email_changeset(user, attrs)
-  end
 
   @doc """
   Emulates that the email will change without actually changing
@@ -225,11 +216,11 @@ defmodule Snownix.Accounts do
 
   ## Examples
 
-      iex> change_user_password(user)
+      iex> user_password_changeset(user)
       %Ecto.Changeset{data: %User{}}
 
   """
-  def change_user_password(user, attrs \\ %{}) do
+  def user_password_changeset(user, attrs \\ %{}) do
     User.password_changeset(user, attrs, hash_password: false)
   end
 
@@ -238,11 +229,11 @@ defmodule Snownix.Accounts do
 
   ## Examples
 
-      iex> change_user_password_with_email(user)
+      iex>  (user)
       %Ecto.Changeset{data: %User{}}
 
   """
-  def change_user_password_with_email(user, attrs \\ %{}) do
+  def user_password_with_email_changeset(user, attrs \\ %{}) do
     User.password_changeset(user, attrs, hash_password: false)
     |> User.validate_email_changeset(attrs)
   end
@@ -305,6 +296,27 @@ defmodule Snownix.Accounts do
   ## Confirmation
 
   @doc """
+  Gets the user by confirm account token.
+
+  ## Examples
+
+      iex> get_user_by_confirm_account_token("validtoken")
+      %User{}
+
+      iex> get_user_by_confirm_account_token("invalidtoken")
+      nil
+
+  """
+  def get_user_by_confirm_account_token(token) do
+    with {:ok, query} <- UserToken.verify_email_token_query(token, "confirm"),
+         %User{} = user <- Repo.one(query) do
+      user
+    else
+      _ -> nil
+    end
+  end
+
+  @doc """
   Delivers the confirmation email instructions to the given user.
 
   ## Examples
@@ -348,19 +360,6 @@ defmodule Snownix.Accounts do
     else
       _ -> :error
     end
-  end
-
-  @doc """
-  Returns an `%Ecto.Changeset{}` for changing the user email.
-
-  ## Examples
-
-      iex> change_user_confirm_email(user)
-      %Ecto.Changeset{data: %User{}}
-
-  """
-  def change_user_confirm_email(user, attrs \\ %{}) do
-    User.validate_email_changeset(user, attrs)
   end
 
   defp confirm_user_multi(user) do
@@ -413,11 +412,11 @@ defmodule Snownix.Accounts do
 
   ## Examples
 
-      iex> change_user_reset_email(user)
+      iex> user_email_changeset(user)
       %Ecto.Changeset{data: %User{}}
 
   """
-  def change_user_reset_email(user, attrs \\ %{}) do
+  def user_email_changeset(user, attrs \\ %{}) do
     User.validate_email_changeset(user, attrs)
   end
 
