@@ -33,7 +33,9 @@ defmodule SnownixWeb.InitAssigns do
   def set_locale(socket, _), do: socket
 
   defp fetch_locale(socket, session) do
-    locale = session["locale"] || nil
+    locale =
+      session["locale"] || Application.get_env(:snownix, SnownixWeb.Gettext, :default_locale)
+
     Gettext.put_locale(SnownixWeb.Gettext, locale)
 
     socket |> assign(:locale, locale)
