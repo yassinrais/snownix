@@ -7,7 +7,7 @@ html{
     @apply font-primary;
 }
 
-input, button, .btn {
+input, button, select, .btn {
     @apply w-full px-4 py-2.5 rounded-md;
     @apply inline-flex items-center justify-center;
     @apply text-base font-medium leading-6;
@@ -40,6 +40,13 @@ input {
     @apply hover:bg-opacity-90;
 }
 
+/** 
+* -----------------------
+* Select
+* ----------------------- */
+select {
+    @apply border;
+}
 /** 
 * -----------------------
 * Checkbox
@@ -144,6 +151,9 @@ main.container{
 
 .auth__menu > a{
     @apply w-auto;
+}
+.auth__menu {
+    @apply inline-flex space-x-3;
 }
 .auth__form {
     @apply w-full flex justify-center;

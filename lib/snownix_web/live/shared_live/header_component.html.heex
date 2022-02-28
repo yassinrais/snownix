@@ -1,7 +1,7 @@
 <section class="header relative text-gray-700  body-font">
     <div class="flex flex-col flex-wrap items-center justify-between py-4 mx-auto md:flex-row container">
         <%= live_redirect "Snownix", to: "/", class: "logo relative z-10" %>
-        <nav class="top-0 left-0 z-0 flex items-center justify-center w-full h-full -ml-0 space-x-5 text-base md:-ml-5 md:py-0 md:absolute py-4 md:py-0">
+        <nav class="top-0 left-0 z-0 flex items-center justify-center w-full h-full -ml-0 space-x-5 text-base md:-ml-5 md:absolute py-4 md:py-0">
             <%= live_redirect gettext("Home"), to: Routes.index_index_path(@socket, :index) %>
             <a>
                 Engineering
@@ -13,17 +13,25 @@
                 <span class="block"><%= gettext("Contact") %></span>
             </a>
         </nav>
-
-        <div class="auth__menu relative z-10 inline-flex items-center space-x-3 md:ml-5 lg:justify-end">
-            <%= if @current_user do %>
-                <.live_component 
-                    id="user-menu"
-                    current_user={@current_user}
-                    module={SnownixWeb.SharedLive.UserMenuComponent}/>
-            <% else %>
-                <%= live_redirect gettext("Sign in"), to: Routes.auth_login_path(@socket, :login) , class: "btn"%>
-                <%= live_redirect gettext("Sign up"), to: Routes.auth_register_path(@socket, :register), class: "btn primary"  %>
-            <% end %>
+        <div class="flex flex-col space-y-3 md:space-y-0 md:flex-row relative z-10 items-center space-x-3 md:ml-5 lg:justify-end">
+            <form phx-change="change-lang" class="w-max"  phx-target={@myself}>
+                <select name="lang" id="lang">
+                    <%= for {title, val} <- get_langs() do %>
+                    <option value={val} selected={@locale == val}><%=title%></option>
+                    <% end %>
+                </select>
+            </form>
+            <div class="auth__menu">
+                <%= if @current_user do %>
+                    <.live_component 
+                        id="user-menu"
+                        current_user={@current_user}
+                        module={SnownixWeb.SharedLive.UserMenuComponent}/>
+                <% else %>
+                    <%= live_redirect gettext("Sign in"), to: Routes.auth_login_path(@socket, :login) , class: "btn"%>
+                    <%= live_redirect gettext("Sign up"), to: Routes.auth_register_path(@socket, :register), class: "btn primary"  %>
+                <% end %>
+            </div>
         </div>
     </div>
 </section>
