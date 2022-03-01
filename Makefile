@@ -4,3 +4,6 @@ reset:
 
 serve:
 	@iex -S mix phx.server
+
+install:
+	@mix deps.get

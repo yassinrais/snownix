@@ -40,7 +40,7 @@ defmodule SnownixWeb.AuthLive.Confirm do
         {:ok, _} ->
           {:noreply,
            socket
-           |> put_flash(:info, "User confirmed successfully.")
+           |> put_flash(:info, "Account confirmed successfully.")
            |> redirect(to: Routes.auth_login_path(socket, :login))}
 
         :error ->
@@ -50,12 +50,15 @@ defmodule SnownixWeb.AuthLive.Confirm do
           # a warning message.
           case socket.assigns do
             %{current_user: %{confirmed_at: confirmed_at}} when not is_nil(confirmed_at) ->
-              {:noreply, socket |> redirect(to: Routes.auth_login_path(socket, :login))}
+              {:noreply,
+               socket
+               |> put_flash(:error, "Account has already been confirmed")
+               |> redirect(to: Routes.auth_login_path(socket, :login))}
 
             %{} ->
               {:noreply,
                socket
-               |> put_flash(:error, "User confirmation link is invalid or it has expired.")
+               |> put_flash(:error, "Account confirmation link is invalid or it has expired.")
                |> redirect(to: Routes.auth_login_path(socket, :login))}
           end
       end

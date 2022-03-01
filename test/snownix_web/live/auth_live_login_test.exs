@@ -26,7 +26,7 @@ defmodule SnownixWeb.AuthLiveLoginTest do
 
     form =
       view
-      |> form("form", user: %{email: user.email, password: valid_user_password()})
+      |> form(".auth__form form", user: %{email: user.email, password: valid_user_password()})
 
     assert form
            |> render_submit() =~ "Welcome back #{user.username}!"
@@ -44,7 +44,7 @@ defmodule SnownixWeb.AuthLiveLoginTest do
 
     form =
       view
-      |> form("form", user: %{email: user.email, password: wrong_user_password()})
+      |> form(".auth__form form", user: %{email: user.email, password: wrong_user_password()})
 
     assert form
            |> render_submit() =~ "Invalid email or password"

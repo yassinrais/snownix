@@ -30,7 +30,7 @@ defmodule SnownixWeb.AuthLiveRegisterTest do
 
   test "register the user", %{conn: conn, user_unique: user} do
     {:ok, view, _html} = live(conn, Routes.auth_register_path(conn, :register))
-    form = view |> form("form", user: user)
+    form = view |> form(".auth__form form", user: user)
 
     assert {:error, {:redirect, %{to: "/auth/login"}}} = form |> render_submit()
   end
@@ -40,7 +40,7 @@ defmodule SnownixWeb.AuthLiveRegisterTest do
 
     form =
       view
-      |> form("form",
+      |> form(".auth__form form",
         user: %{email: "wrong email", username: "invali _ username @ ^$", password: nil}
       )
 
