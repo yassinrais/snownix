@@ -5,7 +5,7 @@
             <%= gettext "Don’t have an account?" %>
             <%= live_patch gettext("Sign up") , to: Routes.auth_register_path(@socket, :register) %>
         </p>
-        <.live_component module={SnownixWeb.SharedLive.AlertsComponent} flash={@flash} id="login-alerts" />
+        <.live_component module={SnownixWeb.SharedLive.AlertsComponent} flash={@flash} id="alerts" />
 
         <.form let={f} for={@changeset} 
             phx-submit="create" phx-change="validate" class="relative w-full space-y-4" 

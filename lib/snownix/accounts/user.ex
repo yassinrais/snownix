@@ -62,6 +62,13 @@ defmodule Snownix.Accounts.User do
     |> validate_password(opts)
   end
 
+  def user_changeset(user, attrs) do
+    user
+    |> cast(attrs, [:fullname, :phone, :username])
+    |> validate_length(:fullname, max: 50)
+    |> validate_username()
+  end
+
   def avatar_changeset(user, attrs) do
     user
     |> cast(attrs, [:avatar])
@@ -182,7 +189,7 @@ defmodule Snownix.Accounts.User do
     if valid_password?(changeset.data, password) do
       changeset
     else
-      add_error(changeset, :current_password, "is not valid")
+      add_error(changeset, :current_password, "Wrong password")
     end
   end
 end

@@ -96,6 +96,7 @@ defmodule SnownixWeb do
       # Import basic rendering functionality (render, render_layout, etc)
       import Phoenix.View
 
+      import SnownixWeb.UtilsHelpers
       import SnownixWeb.ErrorHelpers
       import SnownixWeb.Gettext
       alias SnownixWeb.Router.Helpers, as: Routes

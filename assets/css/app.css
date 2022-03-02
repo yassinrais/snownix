@@ -89,7 +89,7 @@ select {
     @apply text-green-700 bg-green-100 dark:bg-green-200 dark:text-green-800;
 }
 .invalid-feedback{
-    @apply mt-1 flex py-1 text-sm;
+    @apply text-sm;
     @apply text-red-700 dark:text-red-800 ;
 }
 
@@ -275,3 +275,6 @@ main.container{
     @apply w-full border-b border-gray-200 my-5;
 }
 
+.avatar{
+    @apply object-cover rounded-lg ring-2 ring-primary ring-opacity-5;
+}

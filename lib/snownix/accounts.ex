@@ -12,6 +12,22 @@ defmodule Snownix.Accounts do
   ## Database getters
 
   @doc """
+  Gets a user by username.
+
+  ## Examples
+
+      iex> get_user_by_username!("foo@example.com")
+      %User{}
+
+      iex> get_user_by_username!("unknown@example.com")
+      nil
+
+  """
+  def get_user_by_username!(username) when is_binary(username) do
+    Repo.get_by!(User, username: username)
+  end
+
+  @doc """
   Gets a user by email.
 
   ## Examples
@@ -86,7 +102,7 @@ defmodule Snownix.Accounts do
 
   ## Examples
 
-      iex> user_register_changeset(user)
+      iex> user_register_changeset(user, %{username: ...}, %{hash_password: ...})
       %Ecto.Changeset{data: %User{}}
 
   """
@@ -111,7 +127,23 @@ defmodule Snownix.Accounts do
     User.login_changeset(user, attrs, hash_password: false)
   end
 
-  ## Settings
+  ## User Changeset
+  @doc """
+  Emulates that the user information will change without actually changing
+  it in the database.
+
+  ## Examples
+
+      iex> user_changeset(user, %{fullname: ...})
+      {:ok, %User{}}
+
+      iex> user_changeset(user, %{fullname: ...})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def user_changeset(%User{} = user, attrs \\ %{}) do
+    User.user_changeset(user, attrs)
+  end
 
   @doc """
   Emulates that the email will change without actually changing
@@ -259,6 +291,33 @@ defmodule Snownix.Accounts do
     Ecto.Multi.new()
     |> Ecto.Multi.update(:user, changeset)
     |> Ecto.Multi.delete_all(:tokens, UserToken.user_and_contexts_query(user, :all))
+    |> Repo.transaction()
+    |> case do
+      {:ok, %{user: user}} -> {:ok, user}
+      {:error, :user, changeset, _} -> {:error, changeset}
+    end
+  end
+
+  @doc """
+  Updates the user profile.
+
+  ## Examples
+
+      iex> update_user(user, "valid password", %{fullname: ...})
+      {:ok, %User{}}
+
+      iex> update_user(user, "invalid password", %{fullname: ...})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def update_user(user, password, attrs) do
+    changeset =
+      user
+      |> User.user_changeset(attrs)
+      |> User.validate_current_password(password)
+
+    Ecto.Multi.new()
+    |> Ecto.Multi.update(:user, changeset)
     |> Repo.transaction()
     |> case do
       {:ok, %{user: user}} -> {:ok, user}

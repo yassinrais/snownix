@@ -25,6 +25,8 @@ defmodule SnownixWeb.Router do
 
       live "/", IndexLive.Index, :index
 
+      live "/profile/:username", AccountLive.Profile, :index
+
       scope "/account" do
         live "/confirm", AuthLive.Reconfirm, :reconfirm
         live "/confirm/:token", AuthLive.Confirm, :confirm

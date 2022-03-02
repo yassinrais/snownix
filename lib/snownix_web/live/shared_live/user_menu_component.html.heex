@@ -1,9 +1,9 @@
 <div data-menu>
     <button 
         data-menu
-        class="btn light space-x-1" type="button">
-        <%= render SnownixWeb.IconsView, "account.svg", %{} %>
-        <span><%= @current_user.username %></span>
+        class=" light space-x-2" type="button">
+        <span><%= @current_user.fullname %></span>
+        <img class="w-10 h-10 avatar" src={get_user_avatar(@current_user)}>
     </button>
 
     <!-- Dropdown menu -->
@@ -13,15 +13,10 @@
         <span class="block text-sm font-medium truncat"><%= @current_user.email %></span>
         </div>
         <ul class="py-1" >
-        <li>
-            <a href="#" class="block py-2 px-4 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">
-                Dashboard
-            </a>
-        </li>
-        <li>
-            <%= live_redirect gettext("Settings"), to: Routes.account_settings_path(SnownixWeb.Endpoint, :settings), 
-            class: "block py-2 px-4 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white" %>
-        </li>
+            <li>
+                <%= live_redirect gettext("Settings"), to: Routes.account_settings_path(SnownixWeb.Endpoint, :settings), 
+                class: "block py-2 px-4 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white" %>
+            </li>
         </ul>
         <div class="py-1">
             <%= link gettext("Log out"), to: Routes.user_session_path(SnownixWeb.Endpoint, :delete), 

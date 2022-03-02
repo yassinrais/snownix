@@ -12,19 +12,50 @@ defmodule SnownixWeb.AccountLive.Settings do
      |> allow_upload(:avatar,
        accept: ~w(.jpg .jpeg .png .gif),
        max_entries: 1,
+       max_file_size: 2_000_000,
        auto_upload: true,
        progress: &handle_progress/3
      )
-     |> assign(:tab, select_tab())}
+     |> assign(:tab, select_tab())
+     |> assign(:changeset, socket.assigns.current_user |> Accounts.user_changeset(%{}))}
   end
 
   def handle_event("switch-tab", %{"tab" => tab}, socket) do
     {:noreply, socket |> assign(:tab, select_tab(tab))}
   end
 
-  def handle_event("validate", _, socket) do
-    {:noreply, socket}
+  def handle_event("details-validate", %{"user" => user_params}, socket) do
+    {:noreply,
+     socket
+     |> clear_flash()
+     |> assign(
+       :changeset,
+       socket.assigns.current_user
+       |> Accounts.user_changeset(user_params)
+       |> Map.put(:action, :validate)
+     )}
   end
+
+  def handle_event("details-save", %{"user" => user_params}, socket) do
+    user = socket.assigns.current_user
+
+    %{"current_password" => password} = user_params
+
+    case Accounts.update_user(user, password, user_params) do
+      {:ok, user} ->
+        {:noreply,
+         socket
+         |> assign(:current_user, user)
+         |> assign(:changeset, Accounts.user_changeset(user, user_params))
+         |> put_flash(:success, gettext("Account information updated successfully."))}
+
+      {:error, changeset} ->
+        {:noreply, socket |> assign(:changeset, changeset)}
+    end
+  end
+
+  # Avatar
+  def handle_event("validate", _, socket), do: {:noreply, socket}
 
   def handle_event("delete-avatar", _, socket) do
     case Accounts.update_user_avatar(socket.assigns.current_user, nil) do
@@ -76,7 +107,9 @@ defmodule SnownixWeb.AccountLive.Settings do
   end
 
   # Upload messages
-  defp error_to_string(:too_large), do: "Too large"
-  defp error_to_string(:too_many_files), do: "You have selected too many files"
-  defp error_to_string(:not_accepted), do: "You have selected an unacceptable file type"
+  defp error_to_string(:too_large), do: gettext("File size is too large, max allowed 2MB.")
+  defp error_to_string(:too_many_files), do: gettext("You have selected too many files.")
+
+  defp error_to_string(:not_accepted),
+    do: gettext("You have selected an unacceptable file type, only images are accepted.")
 end

@@ -23,10 +23,16 @@ defmodule Snownix.Avatar do
         dest
       ])
 
-    File.cp!(source, static_dest)
-    # resize_avatar(static_dest)
+    case File.cp(source, static_dest) do
+      :ok ->
+        # IO.inspect("Copy Done")
+        # resize_avatar(static_dest)
+        dest
 
-    dest
+      {:error, raison} ->
+        # IO.inspect(raison, label: "raison: ")
+        nil
+    end
   end
 
   @doc """
@@ -41,7 +47,17 @@ defmodule Snownix.Avatar do
       nil
   """
   def resize_avatar(avatar_path) do
-    open(avatar_path) |> resize_to_limit("350x350") |> save()
+    IO.inspect(avatar_path, label: "Before Resize")
+    IO.inspect(open(avatar_path) |> verbose, label: "Resize Done")
+
+    open(avatar_path)
+    |> gravity("Center")
+    |> resize_to_fill("400x400")
+    |> save(path: avatar_path)
+
+    IO.inspect(avatar_path, label: "Resize Done")
+    IO.inspect(open(avatar_path) |> verbose, label: "Resize Done")
+    IO.inspect(File.exists?(avatar_path), label: "File Exists ???? ")
   end
 
   def rm_user_avatar(nil), do: nil
@@ -54,8 +70,13 @@ defmodule Snownix.Avatar do
         avatar
       ])
 
-    with String.contains?(avatar_path, "uploads") and File.exists?(avatar_path) do
-      File.rm(avatar_path)
+    case String.contains?(avatar_path, "uploads/") and File.exists?(avatar_path) do
+      true ->
+        File.rm(avatar_path)
+        true
+
+      _ ->
+        false
     end
   end
 end

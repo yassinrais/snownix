@@ -23,7 +23,7 @@ defmodule Snownix.AccountsTest do
       refute Accounts.get_user_by_email_and_password("unknown@example.com", "hello world!")
     end
 
-    test "does not return the user if the password is not valid" do
+    test "does not return the user if the password Wrong password" do
       user = user_fixture()
       refute Accounts.get_user_by_email_and_password(user.email, "invalid")
     end
@@ -37,7 +37,7 @@ defmodule Snownix.AccountsTest do
   end
 
   describe "get_user!/1" do
-    test "raises if id is not valid uuid" do
+    test "raises if id Wrong password uuid" do
       assert_raise Ecto.Query.CastError, fn ->
         Accounts.get_user!(1)
       end
@@ -52,6 +52,19 @@ defmodule Snownix.AccountsTest do
     test "returns the user with the given id" do
       %{id: id} = user = user_fixture()
       assert %User{id: ^id} = Accounts.get_user!(user.id)
+    end
+  end
+
+  describe "get_user_by_username!/1" do
+    test "raises if username is invalid" do
+      assert_raise Ecto.NoResultsError, fn ->
+        Accounts.get_user_by_username!("0xf")
+      end
+    end
+
+    test "returns the user with the given id" do
+      %{id: id} = user = user_fixture()
+      assert %User{id: ^id} = Accounts.get_user_by_username!(user.username)
     end
   end
 
@@ -194,7 +207,7 @@ defmodule Snownix.AccountsTest do
       {:error, changeset} =
         Accounts.apply_user_email(user, "invalid", %{email: unique_user_email()})
 
-      assert %{current_password: ["is not valid"]} = errors_on(changeset)
+      assert %{current_password: ["Wrong password"]} = errors_on(changeset)
     end
 
     test "applies the email without persisting it", %{user: user} do
@@ -267,6 +280,43 @@ defmodule Snownix.AccountsTest do
     end
   end
 
+  describe "update_user/3" do
+    setup do
+      %{user: user_fixture()}
+    end
+
+    test "validates current password", %{user: user} do
+      {:error, changeset} = Accounts.update_user(user, "invalid", %{fullname: "Jone Doe"})
+
+      assert %{current_password: ["Wrong password"]} = errors_on(changeset)
+    end
+
+    test "updates with a valid password", %{user: user} do
+      fullname = "update name with valid password"
+
+      {:ok, user} =
+        Accounts.update_user(user, valid_user_password(), %{
+          fullname: fullname
+        })
+
+      assert is_nil(user.password)
+      assert Accounts.get_user_by_email(user.email).fullname == fullname
+    end
+
+    test "update only fullname, username and phone information", %{user: user} do
+      Accounts.update_user(user, valid_user_password(), %{
+        fullname: "fullname",
+        phone: "phone",
+        username: "username"
+      })
+
+      fresh_user = Accounts.get_user_by_username!("username")
+      assert fresh_user.phone == "phone"
+      assert fresh_user.fullname == "fullname"
+      assert fresh_user.username == "username"
+    end
+  end
+
   describe "user_password_changeset/2" do
     test "returns a user changeset" do
       assert %Ecto.Changeset{} = changeset = Accounts.user_password_changeset(%User{})
@@ -316,7 +366,7 @@ defmodule Snownix.AccountsTest do
       {:error, changeset} =
         Accounts.update_user_password(user, "invalid", %{password: valid_user_password()})
 
-      assert %{current_password: ["is not valid"]} = errors_on(changeset)
+      assert %{current_password: ["Wrong password"]} = errors_on(changeset)
     end
 
     test "updates the password", %{user: user} do
