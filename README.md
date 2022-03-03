@@ -10,6 +10,26 @@ To start Phoenix server:
 
 Now you can visit [`localhost:4000`](http://localhost:4000) from your browser.
 
+## Enable S3 Storage
+
+Copy the env example and modify values
+
+```
+cp .env.example .env
+```
+
+Run command to apply the env vars
+
+```
+source .env
+```
+
+Run the Phoenix server
+
+```
+mix phx.server
+```
+
 ## Docs
 
 - Docs: https://hexdocs.pm/phoenix

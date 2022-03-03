@@ -5,17 +5,19 @@ defmodule Snownix.Avatar do
   Save , Resize, Remove avatar
   """
   import Mogrify
+  alias Snownix.Storage
 
   @doc """
-  Copy Avatarto static directory
-  copy from source and paste to dest static and resize
+  Upload Avatar to static directory/S3
+  Upload from source and paste to dest static and resize
 
   ## Examples
 
-      iex> save_avatar("/tmp/xyz/jpg", "/avatars/user-1.jpg")
+      iex> upload_avatar("/tmp/xyz/jpg", "/avatars/user-1.jpg")
       "/avatars/user-1.jpg"
   """
-  def save_avatar(source, dest) do
+  @bucket_name "snownix"
+  def upload_avatar(filename, source, dest) do
     static_dest =
       Path.join([
         :code.priv_dir(:snownix),
@@ -25,12 +27,23 @@ defmodule Snownix.Avatar do
 
     case File.cp(source, static_dest) do
       :ok ->
-        # IO.inspect("Copy Done")
-        # resize_avatar(static_dest)
-        dest
+        resize_avatar(source)
 
-      {:error, raison} ->
-        # IO.inspect(raison, label: "raison: ")
+        if Application.fetch_env!(:ex_aws, :enable) do
+          {:ok, binary} = File.read(source)
+
+          case Storage.upload_file(@bucket_name, filename, binary) do
+            {:ok, url} ->
+              url
+
+            _ ->
+              nil
+          end
+        else
+          dest
+        end
+
+      _ ->
         nil
     end
   end
@@ -47,17 +60,10 @@ defmodule Snownix.Avatar do
       nil
   """
   def resize_avatar(avatar_path) do
-    IO.inspect(avatar_path, label: "Before Resize")
-    IO.inspect(open(avatar_path) |> verbose, label: "Resize Done")
-
     open(avatar_path)
     |> gravity("Center")
     |> resize_to_fill("400x400")
     |> save(path: avatar_path)
-
-    IO.inspect(avatar_path, label: "Resize Done")
-    IO.inspect(open(avatar_path) |> verbose, label: "Resize Done")
-    IO.inspect(File.exists?(avatar_path), label: "File Exists ???? ")
   end
 
   def rm_user_avatar(nil), do: nil

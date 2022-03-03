@@ -67,6 +67,18 @@ config :snownix, SnownixWeb.Gettext,
   default_locale: "en",
   locales: ~w(en fr)
 
+# S3 Storage
+config :ex_aws,
+  access_key_id: [System.get_env("AWS_ACCESS_KEY_ID"), :instance_role],
+  secret_access_key: [System.get_env("AWS_SECRET_ACCESS_KEY"), :instance_role],
+  s3: [
+    port: System.get_env("AWS_PORT", "9000") |> String.to_integer(),
+    host: System.get_env("AWS_HOST", "localhost"),
+    scheme: System.get_env("AWS_SCHEME", "http://"),
+    region: System.get_env("AWS_REGION", "us-east-1")
+  ],
+  enable: System.get_env("AWS_STORAGE_S3")
+
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.
 import_config "#{config_env()}.exs"

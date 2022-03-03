@@ -4,6 +4,15 @@ defmodule SnownixWeb.UtilsHelpers do
   """
 
   def get_user_avatar(user) do
-    (!is_nil(user) && user.avatar) || "/images/snownix-small.png"
+    if is_nil(user) or is_nil(user.avatar) do
+      "/images/snownix-small.png"
+    else
+      user.avatar <>
+        "?u=" <>
+        (user.updated_at
+         |> DateTime.from_naive!("Etc/UTC")
+         |> DateTime.to_unix()
+         |> Integer.to_string())
+    end
   end
 end

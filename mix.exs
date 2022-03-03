@@ -26,7 +26,7 @@ defmodule Snownix.MixProject do
   # Type `mix help compile.app` for more information.
   def application do
     [
-      mod: {Snownix.Application, []},
+      mod: {Snownix.Application, [:confex]},
       extra_applications: [:logger, :runtime_tools]
     ]
   end
@@ -58,7 +58,12 @@ defmodule Snownix.MixProject do
       {:jason, "~> 1.2"},
       {:tailwind, "~> 0.1", runtime: Mix.env() == :dev},
       {:plug_cowboy, "~> 2.5"},
+      {:ex_aws, "~> 2.1"},
+      {:ex_aws_s3, "~> 2.0"},
+      {:hackney, "~> 1.9"},
+      {:sweet_xml, "~> 0.6"},
       {:excoveralls, "~> 0.10", only: :test},
+      {:confex, "~> 3.5.0"},
       {:mogrify, "~> 0.9.1"}
     ]
   end

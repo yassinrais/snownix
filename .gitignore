@@ -42,3 +42,6 @@ npm-debug.log
 # Uploads
 /priv/static/uploads/avatars/**
 !/priv/static/uploads/avatars/.gitkeep
+
+# env files
+.env

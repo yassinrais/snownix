@@ -10,7 +10,7 @@ defmodule SnownixWeb.AccountLive.Settings do
      socket
      |> assign(:tabs, @tabs)
      |> allow_upload(:avatar,
-       accept: ~w(.jpg .jpeg .png .gif),
+       accept: ~w(.jpg .jpeg .png .gif .txt),
        max_entries: 1,
        max_file_size: 2_000_000,
        auto_upload: true,
@@ -75,8 +75,8 @@ defmodule SnownixWeb.AccountLive.Settings do
         consume_uploaded_entries(socket, :avatar, fn %{path: path}, entry ->
           filename = "#{current_user.id}#{Path.extname(entry.client_name)}"
           dest = "/uploads/avatars/#{filename}"
-          Avatar.save_avatar(path, dest)
-          {:ok, Routes.static_path(socket, dest)}
+          # , Routes.static_path(socket, dest)
+          {:ok, Avatar.upload_avatar(filename, path, dest)}
         end)
 
       avatar = uploaded_files |> List.first()
