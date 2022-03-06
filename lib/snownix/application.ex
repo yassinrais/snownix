@@ -14,6 +14,8 @@ defmodule Snownix.Application do
       SnownixWeb.Telemetry,
       # Start the PubSub system
       {Phoenix.PubSub, name: Snownix.PubSub},
+      # Cache Service
+      {Cachex, name: :snownix},
       # Start the Endpoint (http/https)
       SnownixWeb.Endpoint
       # Start a worker by calling: Snownix.Worker.start_link(arg)

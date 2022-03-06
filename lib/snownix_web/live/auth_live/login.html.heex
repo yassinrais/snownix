@@ -13,12 +13,11 @@
               <div class="relative">
                 <%= label f, :email, gettext("Email") , class: "font-medium text-gray-900" %>
                 <%= email_input f, :email, placeholder: gettext("Enter Your Email Address"), required: true, phx_debounce: "blur" %>
-                <%= error_tag f, :email, 1 %>
             </div>
             <div class="relative">
                 <%= label f, :password, gettext("Password") , class: "font-medium text-gray-900" %>
-                <%= password_input f, :password, placeholder: gettext("Password"), required: true, value: input_value(f, :password), phx_debounce: "blur" %>
-                <%= error_tag f, :password, 1 %>
+                <%= password_input f, :password, placeholder: gettext("Password"), required: true, value: input_value(f, :password), phx_throttle: 1000 %>
+                <%= error_tag f, :password %>
             </div>
             <div class="flex flex-col md:flex-row justify-between space-y-2 md:space-y-0">
                 <div class="checkbox">
@@ -30,7 +29,7 @@
             <%= live_patch gettext("Forgot password?") , to: Routes.auth_forgot_password_path(@socket, :forgot), class: "text-sm" %>
             </div>
             <div>
-              <button type="submit" class="btn primary"><%= gettext("Login") %></button>
+              <button type="submit" class="btn primary" disabled={length(f.errors) > 0}><%= gettext("Login") %></button>
             </div>
         </.form>
     </div>

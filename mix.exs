@@ -61,10 +61,10 @@ defmodule Snownix.MixProject do
       {:ex_aws, "~> 2.1"},
       {:ex_aws_s3, "~> 2.0"},
       {:hackney, "~> 1.9"},
-      {:sweet_xml, "~> 0.6"},
       {:excoveralls, "~> 0.10", only: :test},
-      {:confex, "~> 3.5.0"},
-      {:mogrify, "~> 0.9.1"}
+      {:mogrify, "~> 0.9.1"},
+      {:cachex, "~> 3.4"},
+      {:slugify, "~> 1.3"}
     ]
   end
 

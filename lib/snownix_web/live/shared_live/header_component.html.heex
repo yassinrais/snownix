@@ -2,16 +2,35 @@
     <div class="flex flex-col flex-wrap items-center justify-between py-4 mx-auto md:flex-row container">
         <%= live_redirect "Snownix", to: "/", class: "logo relative z-10" %>
         <nav class="top-0 left-0 z-0 flex items-center justify-center w-full h-full -ml-0 space-x-5 text-base md:-ml-5 md:absolute py-4 md:py-0">
-            <%= live_redirect gettext("Home"), to: Routes.index_index_path(@socket, :index) %>
-            <a>
-                Engineering
-            </a>
-            <a>
-                <span class="block">Projects</span>
-            </a>
-            <a>
-                <span class="block"><%= gettext("Contact") %></span>
-            </a>
+            <%= for menu <- list_menu() do %>
+                <div data-menu data-hover>
+                   <div class="flex items-end">
+                        <%= if menu.item.newtab do %>
+                            <%= link menu.item.title, to: menu.item.link, target: "_blank" %>
+                        <% else %>
+                            <%= live_redirect menu.item.title, to: menu.item.link %>
+                        <% end %>
+                        <%= if length(menu.sub) > 0 do %>
+                            <svg class="text-gray-400 h-5 w-5 group-hover:text-gray-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                                <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+                            </svg>
+                        <% end %>
+                   </div>
+                    <%= if length(menu.sub) > 0 do %>
+                        <ul data-menu-dropdown class="w-44 min-w-max text-base list-none bg-white rounded divide-y divide-gray-100 shadow dark:bg-gray-700 dark:divide-gray-600 left-0 top-4">
+                            <%= for sub <- menu.sub do %>
+                                <li class="p-3">
+                                    <%= if sub.item.newtab do %>
+                                        <%= link sub.item.title, to: sub.item.link, target: "_blank" %>
+                                    <% else %>
+                                        <%= live_redirect sub.item.title, to: sub.item.link %>
+                                    <% end %>
+                                </li>
+                            <% end %>
+                        </ul>
+                    <% end %>
+                </div>
+            <% end %>
         </nav>
         <div class="flex flex-col space-y-3 md:space-y-0 md:flex-row relative z-10 items-center space-x-3 md:ml-5 lg:justify-end">
             <div class="auth__menu">

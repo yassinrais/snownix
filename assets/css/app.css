@@ -14,10 +14,10 @@ input, button, select, .btn {
 }
 
 input {
-    @apply bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block;
     @apply focus:ring-gray-100 focus:border-gray-100;
-    @apply dark:focus:ring-gray-100 dark:focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600;
     @apply dark:placeholder-gray-400 dark:text-white;
+    @apply bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block;
+    @apply dark:focus:ring-gray-100 dark:focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600;
 }
 
 
@@ -39,7 +39,9 @@ input {
     @apply bg-primary text-light border-none;
     @apply hover:bg-opacity-90;
 }
-
+.btn:disabled {
+    @apply bg-dark;
+}
 /** 
 * -----------------------
 * Select
@@ -73,6 +75,9 @@ select {
     @apply p-4 text-base rounded-lg w-full;
 }
 .alerts {
+    transition-property: transform;
+    transition-duration: 2s;
+    transition-delay: 1s;
     @apply flex flex-col w-full;
 }
 
@@ -134,8 +139,9 @@ main.container{
     /* top: 3.25rem; */
 }
 *[data-menu]:focus-within > *[data-menu-dropdown],
+*[data-hover]:hover > *[data-menu-dropdown],
 *[data-menu-dropdown]:hover {
-    @apply opacity-100 mt-4;
+    @apply opacity-100 mt-3;
     transform: scaleX(1) scaleY(1);
     transition-timing-function: cubic-bezier(0, 0, 0.2, 1);
     transition-duration: 100ms;
@@ -277,4 +283,33 @@ main.container{
 
 .avatar{
     @apply object-cover rounded-lg ring-2 ring-primary ring-opacity-5;
+}
+
+/**
+* -------------------------
+* Modal
+* -------------------------
+*/
+
+.phx-modal {
+    @apply flex bg-indigo-100 p-4; 
+}
+.phx-modal div{
+    @apply flex flex-col w-full;
+}
+
+
+/**
+* ------------------------- *
+* Table
+* ------------------------- */
+table{
+    @apply w-full;
+}
+
+th,td{
+    @apply text-left p-2;
+}
+th, tr:nth-of-type(2n){
+    @apply bg-gray-100;
 }

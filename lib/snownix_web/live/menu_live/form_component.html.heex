@@ -1,0 +1,38 @@
+<div>
+  <h2><%= @title %></h2>
+
+  <.form
+    let={f}
+    for={@changeset}
+    id="menu-form"
+    phx-target={@myself}
+    phx-change="validate"
+    phx-submit="save">
+  <div>
+    <%= label f, :title %>
+    <%= textarea f, :title %>
+    <%= error_tag f, :title %>
+  </div> 
+  <div>
+    <%= label f, :link %>
+    <%= textarea f, :link %>
+    <%= error_tag f, :link %>
+     </div> <div>
+    <%= label f, :newtab %>
+    <%= checkbox f, :newtab %>
+    <%= error_tag f, :newtab %>
+     </div> <div>
+    <%= label f, :status %>
+    <%= select f, :status, [:active, :inactive] %>
+    <%= error_tag f, :status %>
+     </div> 
+  <div>
+    <%= label f, :parent_id %>
+    <%= select f, :parent_id, Snownix.Navigation.list_menus() |> Enum.reduce([nil: nil], fn m, ac -> ac ++ [{m.title, m.id}] end) %>
+    <%= error_tag f, :parent_id%>
+  </div>
+    <div>
+      <%= submit "Save", phx_disable_with: "Saving..." %>
+    </div>
+  </.form>
+</div>

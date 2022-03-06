@@ -15,13 +15,13 @@ defmodule SnownixWeb.Router do
   end
 
   pipeline :api do
-    plug :accepts, ["json"]
+    plug(:accepts, ["json"])
   end
 
   ## Liveview routes
   live_session :default, on_mount: {SnownixWeb.InitAssigns, :user} do
     scope "/", SnownixWeb do
-      pipe_through [:browser]
+      pipe_through([:browser])
 
       live "/", IndexLive.Index, :index
 
@@ -33,13 +33,22 @@ defmodule SnownixWeb.Router do
       end
 
       scope "/account" do
-        pipe_through [:require_authenticated_user]
+        pipe_through([:require_authenticated_user])
 
         live "/settings", AccountLive.Settings, :settings
       end
 
+      scope "/admin" do
+        live "/menus", MenuLive.Index, :index
+        live "/menus/new", MenuLive.Index, :new
+        live "/menus/:id/edit", MenuLive.Index, :edit
+
+        live "/menus/:id", MenuLive.Show, :show
+        live "/menus/:id/show/edit", MenuLive.Show, :edit
+      end
+
       scope "/auth" do
-        pipe_through [:redirect_if_user_is_authenticated]
+        pipe_through([:redirect_if_user_is_authenticated])
 
         live "/login", AuthLive.Login, :login
         live "/register", AuthLive.Register, :register
@@ -51,14 +60,14 @@ defmodule SnownixWeb.Router do
 
   ## Controllers
   scope "/auth", SnownixWeb do
-    pipe_through [:browser]
+    pipe_through([:browser])
 
-    delete "/logout", UserSessionController, :delete
+    delete("/logout", UserSessionController, :delete)
   end
 
   scope "/auth", SnownixWeb do
-    pipe_through [:browser, :redirect_if_user_is_authenticated]
-    post "/login", UserSessionController, :create
+    pipe_through([:browser, :redirect_if_user_is_authenticated])
+    post("/login", UserSessionController, :create)
   end
 
   # Other scopes may use custom stacks.
@@ -77,9 +86,9 @@ defmodule SnownixWeb.Router do
     import Phoenix.LiveDashboard.Router
 
     scope "/" do
-      pipe_through :browser
+      pipe_through(:browser)
 
-      live_dashboard "/dashboard", metrics: SnownixWeb.Telemetry
+      live_dashboard("/dashboard", metrics: SnownixWeb.Telemetry)
     end
   end
 
@@ -89,9 +98,9 @@ defmodule SnownixWeb.Router do
   # node running the Phoenix server.
   if Mix.env() == :dev do
     scope "/dev" do
-      pipe_through :browser
+      pipe_through(:browser)
 
-      forward "/mailbox", Plug.Swoosh.MailboxPreview
+      forward("/mailbox", Plug.Swoosh.MailboxPreview)
     end
   end
 end
