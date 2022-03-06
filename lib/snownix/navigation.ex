@@ -31,20 +31,9 @@ defmodule Snownix.Navigation do
 
   """
   def list_active_menus do
-    menus = Cachex.get!(:snownix, "list_active_menus")
-
-    if is_nil(menus) do
-      menus =
-        Menu
-        |> where(status: "active")
-        |> Repo.all()
-
-      Cachex.put!(:snownix, "list_active_menus", menus)
-
-      menus
-    else
-      menus
-    end
+    Menu
+    |> where(status: "active")
+    |> Repo.all()
   end
 
   @doc """
@@ -134,7 +123,7 @@ defmodule Snownix.Navigation do
     Menu.changeset(menu, attrs)
   end
 
-  defp menu_cache_clear() do
+  def menu_cache_clear() do
     Cachex.del!(:snownix, "list_active_menus")
   end
 end

@@ -13,7 +13,6 @@ defmodule Snownix.NavigationFixtures do
       |> Enum.into(%{
         link: "some link",
         newtab: true,
-        parent_id: "some parent_id",
         status: "some status",
         title: "some title"
       })

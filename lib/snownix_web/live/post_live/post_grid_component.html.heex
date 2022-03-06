@@ -1,0 +1,15 @@
+<article>
+    <%= live_redirect to: Routes.post_read_path(@socket, :read, @post.slug) do %>
+        <img src={@post.poster} class="object-cover w-full h-56 mb-5 bg-center rounded" alt="Kutty" loading="lazy" />
+    <% end %>
+    <h2 class="mb-2 text-lg font-semibold text-gray-900">
+        <%= live_redirect @post.title, to: Routes.post_read_path(@socket, :read, @post.slug), class: "text-gray-900 hover:text-purple-700" %>
+    </h2>
+    <p class="mb-3 text-sm font-normal text-gray-500">
+        <%= @post.description |> String.slice(0,140) %>...
+    </p>
+    <p class="mb-3 text-sm font-normal text-gray-500">
+    <a href="#" class="font-medium text-gray-900 hover:text-purple-700">Praveen Juge</a>
+    • <%= article_date_format(@post.published_at) %>
+    </p>
+</article>

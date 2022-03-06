@@ -59,33 +59,33 @@ defmodule SnownixWeb.LiveHelpers do
   end
 
   def list_menu() do
-    Snownix.Navigation.list_active_menus()
-    |> map_menu_subs()
+    menus = Cachex.get!(:snownix, "list_active_menus")
+
+    if is_nil(menus) do
+      menus =
+        Snownix.Navigation.list_active_menus()
+        |> map_menu_subs()
+
+      Cachex.put!(:snownix, "list_active_menus", menus)
+
+      menus
+    else
+      menus
+    end
   end
+
+  defp map_menu_item(item), do: [%{item: item, sub: []}]
 
   def map_menu_subs(menus) do
     menus
     |> Enum.reduce([], fn item, list ->
       if is_nil(item.parent_id) do
-        list ++
-          [
-            %{
-              item: item,
-              sub: []
-            }
-          ]
+        list ++ map_menu_item(item)
       else
         Enum.map(list, fn parent ->
           if parent.item.id == item.parent_id do
             Map.merge(parent, %{
-              sub:
-                parent.sub ++
-                  [
-                    %{
-                      item: item,
-                      sub: []
-                    }
-                  ]
+              sub: parent.sub ++ map_menu_item(item)
             })
           else
             parent
@@ -93,5 +93,9 @@ defmodule SnownixWeb.LiveHelpers do
         end)
       end
     end)
+  end
+
+  def article_date_format(naive_date) do
+    naive_date |> DateTime.from_naive!("Etc/UTC") |> Calendar.strftime("%a, %B %d %Y")
   end
 end

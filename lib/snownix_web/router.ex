@@ -25,6 +25,8 @@ defmodule SnownixWeb.Router do
 
       live "/", IndexLive.Index, :index
 
+      live "/posts/:slug", PostLive.Read, :read
+
       live "/profile/:username", AccountLive.Profile, :index
 
       scope "/account" do
@@ -45,6 +47,13 @@ defmodule SnownixWeb.Router do
 
         live "/menus/:id", MenuLive.Show, :show
         live "/menus/:id/show/edit", MenuLive.Show, :edit
+
+        live "/posts", PostLive.Index, :index
+        live "/posts/new", PostLive.Index, :new
+        live "/posts/:id/edit", PostLive.Index, :edit
+
+        live "/posts/:id", PostLive.Show, :show
+        live "/posts/:id/show/edit", PostLive.Show, :edit
       end
 
       scope "/auth" do
