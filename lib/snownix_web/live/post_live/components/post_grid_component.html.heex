@@ -1,0 +1,20 @@
+<article class="post">
+    <%= live_redirect to: Routes.post_read_path(@socket, :read, @post.slug) do %>
+        <img src={@post.poster} class="poster" alt="Kutty" loading="lazy" />
+    <% end %>
+    <h2>
+        <%= live_redirect @post.title, to: Routes.post_read_path(@socket, :read, @post.slug), class: "text-gray-900 hover:text-purple-700" %>
+    </h2>
+    <p class="desc">
+        <%= @post.description |> String.slice(0,140) %>...
+    </p>
+    <p class="author">
+        <%= if @post.author do %>
+            <%= live_redirect to: Routes.account_profile_path(@socket, :index, @post.author.username) do %>
+                <img class="avatar" width="30px" height="30px" src={get_user_avatar(@post.author)}>
+                <span><%= @post.author.fullname || @post.author.username %></span>
+            <% end %>
+        <% end %>
+        <time datetime={@post.published_at}><%= article_date_format(@post.published_at) %></time>
+    </p>
+</article>

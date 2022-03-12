@@ -47,6 +47,7 @@ config :tailwind,
   version: "3.0.23",
   default: [
     args: ~w(
+    --postcss
     --config=../assets/tailwind.config.js
     --input=../assets/css/app.css
     --output=../priv/static/assets/app.css

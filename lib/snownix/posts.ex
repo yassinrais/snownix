@@ -18,7 +18,9 @@ defmodule Snownix.Posts do
 
   """
   def list_posts do
-    Repo.all(Post)
+    Post
+    |> Repo.all()
+    |> Repo.preload(:author)
   end
 
   @doc """
@@ -39,6 +41,8 @@ defmodule Snownix.Posts do
 
   def get_post_by_slug!(slug) do
     Repo.get_by!(Post, slug: slug)
+    |> Repo.preload(:author)
+    |> Repo.preload(:entities)
   end
 
   @doc """

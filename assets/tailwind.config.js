@@ -20,6 +20,5 @@ module.exports = {
       primary: ['Inter', 'Raleway', 'sans-serif']
     }
   },
-  plugins: [],
+  plugins: []
 }
-

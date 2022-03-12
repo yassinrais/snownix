@@ -5,6 +5,7 @@ defmodule Snownix.Posts.Post do
   @primary_key {:id, :binary_id, autogenerate: true}
 
   alias Snownix.Accounts.User
+  alias Snownix.Posts.Entity
 
   schema "posts" do
     field :description, :string
@@ -12,8 +13,10 @@ defmodule Snownix.Posts.Post do
     field :published_at, :naive_datetime
     field :slug, :string
     field :title, :string
+    field :read_time, :integer
 
     belongs_to :author, User, type: :binary_id
+    has_many :entities, Entity
 
     timestamps()
   end
@@ -21,7 +24,8 @@ defmodule Snownix.Posts.Post do
   @doc false
   def changeset(post, attrs) do
     post
-    |> cast(attrs, [:slug, :title, :poster, :description, :published_at])
+    |> cast(attrs, [:slug, :title, :poster, :description, :published_at, :author_id, :entities])
+    |> cast_assoc(:entities)
     |> validate_required([:slug, :title, :poster, :description, :published_at])
   end
 end

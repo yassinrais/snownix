@@ -1,0 +1,23 @@
+article.post {
+    @apply flex flex-col justify-between;
+}
+
+article .poster{
+    @apply object-cover w-full h-56 bg-center rounded;
+}
+
+article h2{
+    @apply mt-4 text-lg font-semibold text-gray-900;
+}
+
+article .desc {
+    @apply text-sm mb-4 font-normal text-gray-500;
+}
+
+article .author {
+    @apply flex items-center justify-between text-sm font-normal text-gray-500;
+}
+
+article .author a{
+    @apply flex items-center space-x-2 font-medium text-gray-900 hover:text-purple-700;
+}

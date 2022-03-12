@@ -9,9 +9,11 @@ defmodule Snownix.Repo.Migrations.CreatePosts do
       add :title, :text
       add :poster, :text
       add :description, :text
+      add :read_time, :integer, default: 0
+
       add :published_at, :naive_datetime
 
-      add :author_id, :uuid
+      add :author_id, references(:users, on_delete: :nothing, type: :uuid)
 
       timestamps()
     end

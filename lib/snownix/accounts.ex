@@ -9,6 +9,19 @@ defmodule Snownix.Accounts do
 
   alias Snownix.Accounts.{User, UserToken, UserNotifier}
 
+  @doc """
+  Returns the list of users.
+
+  ## Examples
+
+      iex> list_users()
+      [%Menu{}, ...]
+
+  """
+  def list_users do
+    Repo.all(User)
+  end
+
   ## Database getters
 
   @doc """

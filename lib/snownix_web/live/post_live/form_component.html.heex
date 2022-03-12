@@ -30,6 +30,11 @@
     <%= error_tag f, :published_at %>
   
     <div>
+      <%= label f, :author_id %>
+      <%= select f, :author_id, Snownix.Accounts.list_users() |> Enum.reduce([nil: nil], fn m, ac -> ac ++ [{m.email, m.id}] end) %>
+      <%= error_tag f, :author_id%>
+    </div>
+    <div>
       <%= submit "Save", phx_disable_with: "Saving..." %>
     </div>
   </.form>
