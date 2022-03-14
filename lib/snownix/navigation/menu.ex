@@ -11,7 +11,7 @@ defmodule Snownix.Navigation.Menu do
     field :link, :string
 
     field :newtab, :boolean, default: false
-    field :status, :string
+    field :status, :string, default: "active"
 
     timestamps()
   end

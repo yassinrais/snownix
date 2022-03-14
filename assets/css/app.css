@@ -27,7 +27,7 @@ input {
  * Buttons
  * ----------------------- */
 .btn {
-    @apply inline-flex justify-center shadow-sm;
+    @apply inline-flex justify-center shadow-sm cursor-pointer;
     @apply border bg-opacity-95 hover:bg-opacity-100 focus:ring-4;
     @apply focus:ring-blue-300 font-medium rounded-lg text-sm;
     @apply  hover:bg-gray-100 hover:text-blue-700 dark:text-white dark:hover:text-gray-700 ;
@@ -41,8 +41,9 @@ input {
     @apply hover:bg-opacity-90;
 }
 .btn:disabled {
-    @apply bg-dark;
+    @apply bg-gray-100 text-dark cursor-default;
 }
+
 /** 
 * -----------------------
 * Select

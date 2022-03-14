@@ -4,6 +4,26 @@ defmodule SnownixWeb.LiveHelpers do
 
   alias Phoenix.LiveView.JS
 
+  @meta_list %{
+    "title" => %{field: :page_title, default: "Snownix"},
+    "description" => %{field: :page_desc, default: nil},
+    "keywords" => %{field: :page_keywords, default: nil},
+    "og:title" => %{field: :page_title, default: "Snownix"},
+    "og:image" => %{field: :page_image, default: nil},
+    "og:type" => %{field: :page_ogtype, default: "website"},
+    "og:url" => %{field: :page_url, default: nil},
+    "og:description" => %{field: :page_desc, default: nil},
+    "og:site_name" => %{field: :page_sitename, default: "Snownix"},
+    "twitter:card" => %{field: :page_twitter_card, default: "summary"},
+    "twitter:title" => %{field: :page_title, default: "Snownix"},
+    "twitter:site" => %{field: :page_url, default: nil},
+    "twitter:image:src" => %{field: :page_image, default: nil},
+    "twitter:creator" => %{field: :page_author, default: "Snownix"},
+    "twitter:description" => %{field: :page_desc, default: nil},
+    "robots" => %{field: :page_robots, default: "index, follow"},
+    "language" => %{field: :page_lang, default: "English"}
+  }
+
   @doc """
   Renders a live component inside a modal.
 
@@ -58,6 +78,11 @@ defmodule SnownixWeb.LiveHelpers do
     |> JS.hide(to: "#modal-content", transition: "fade-out-scale")
   end
 
+  @doc """
+  Get list of active menus
+  if cache exists return cache list
+  else fetch fresh list
+  """
   def list_menu() do
     menus = Cachex.get!(:snownix, "list_active_menus")
 
@@ -95,6 +120,9 @@ defmodule SnownixWeb.LiveHelpers do
     end)
   end
 
+  @doc """
+  Format naive date
+  """
   def article_date_format(naive_date) do
     naive_date |> DateTime.from_naive!("Etc/UTC") |> Calendar.strftime("%a, %B %d %Y")
   end
@@ -102,10 +130,6 @@ defmodule SnownixWeb.LiveHelpers do
   @split_pattern [" ", "\n", "\r", "\t"]
   @words_per_minute 200
 
-  @spec reading_time(String.t(),
-          words_per_minute: non_neg_integer(),
-          split_pattern: nonempty_list(String.t())
-        ) :: number
   @doc """
   Returns the time in minutes for a given string.
   ## Examples
@@ -128,5 +152,37 @@ defmodule SnownixWeb.LiveHelpers do
       |> trunc
 
     minutes
+  end
+
+  @doc """
+  Assign meta tags
+  """
+  def put_meta_tags(socket, params \\ %{}) do
+    socket |> assign(params)
+  end
+
+  @doc """
+  Generate meta tags using available assigns data
+  """
+  def put_meta_tags_list(assigns) do
+    meta_tags =
+      @meta_list
+      |> Enum.reduce("", fn {name, %{field: field, default: default}}, metas ->
+        if is_nil(assigns[field]) && is_nil(default),
+          do: metas,
+          else: ~H"""
+          <%= metas %>
+          <meta name={name} content={assigns[field] || default}>
+          """
+      end)
+
+    if assigns[:page_image] do
+      ~H"""
+      <%= meta_tags %>
+      <meta content="summary_large_image" name="twitter:card">
+      """
+    else
+      meta_tags
+    end
   end
 end

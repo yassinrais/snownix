@@ -1,8 +1,9 @@
-<article class="post">
+<article class="post grid">
     <%= live_redirect to: Routes.post_read_path(@socket, :read, @post.slug) do %>
-        <img src={@post.poster} class="poster" alt="Kutty" loading="lazy" />
+        <img async="on" src={@post.poster} class="poster" alt={@post.title} loading="lazy" />
     <% end %>
-    <h2>
+    <div>
+    <h2 class="truncate max-h-16">
         <%= live_redirect @post.title, to: Routes.post_read_path(@socket, :read, @post.slug), class: "text-gray-900 hover:text-purple-700" %>
     </h2>
     <p class="desc">
@@ -11,10 +12,12 @@
     <p class="author">
         <%= if @post.author do %>
             <%= live_redirect to: Routes.account_profile_path(@socket, :index, @post.author.username) do %>
-                <img class="avatar" width="30px" height="30px" src={get_user_avatar(@post.author)}>
+                <img class="avatar" width="30px" height="30px" src={get_user_avatar(@post.author)} alt={@post.author.username <> " Avatar"}>
                 <span><%= @post.author.fullname || @post.author.username %></span>
             <% end %>
         <% end %>
         <time datetime={@post.published_at}><%= article_date_format(@post.published_at) %></time>
+        <span><%= @post.read_time %> min. read</span>
     </p>
+    </div>
 </article>

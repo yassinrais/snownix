@@ -1,12 +1,14 @@
 <.live_component module={SnownixWeb.SharedLive.AlertsComponent} flash={@flash} id="index-alerts" />
-<section class="py-4 max-w-7xl">
-  <div class="grid grid-cols-1 gap-12 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3">
-    <%= for post <- @posts do %>
-      <.live_component module={SnownixWeb.PostLive.Components.PostGridComponent} post={post} id={"post-#{post.id}"} />
-    <% end %>
+<section class="flex flex-col space-y-10 py-4 max-w-7xl">
+  
+  <div class="flex w-full">
+    <.live_component module={SnownixWeb.PostLive.Components.PostListComponent} post={List.first(@posts)}
+      id={"f-#{List.first(@posts).id}"} />
   </div>
-  <div class="flex flex-col items-center justify-center mt-20 space-x-0 space-y-2 md:space-x-2 md:space-y-0 md:flex-row">
-    <a href="#" class="w-full rounded-full btn btn-light btn-xl md:w-auto">Previous Page</a>
-    <a href="#" class="w-full rounded-full btn btn-light btn-xl md:w-auto">Next Page</a>
+
+  <div class="grid grid-cols-1 gap-12 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3">
+    <%= for post <- @posts |> Enum.slice(1,6) do %>
+      <.live_component module={SnownixWeb.PostLive.Components.PostGridComponent} post={post} id={"post-#{post.id}"} />
+      <% end %>
   </div>
 </section>

@@ -6,11 +6,15 @@ defmodule SnownixWeb.IndexLive.Index do
   def mount(_, _, socket) do
     {:ok,
      socket
-     |> assign_posts()
-     |> assign(:page_title, gettext("Home"))}
+     |> assign(:page_title, gettext("Home"))
+     |> assign_posts()}
   end
 
   def assign_posts(socket) do
-    socket |> assign(:posts, Posts.list_posts())
+    socket
+    |> assign(
+      :posts,
+      Posts.last_posts()
+    )
   end
 end

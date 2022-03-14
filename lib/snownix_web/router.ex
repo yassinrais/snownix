@@ -25,7 +25,10 @@ defmodule SnownixWeb.Router do
 
       live "/", IndexLive.Index, :index
 
-      live "/posts/:slug", PostLive.Read, :read
+      scope "/posts" do
+        live "/", PostLive.List, :list
+        live "/:slug", PostLive.Read, :read
+      end
 
       live "/profile/:username", AccountLive.Profile, :index
 

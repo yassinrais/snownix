@@ -17,8 +17,22 @@ defmodule Snownix.Posts do
       [%Post{}, ...]
 
   """
-  def list_posts do
+  def list_posts() do
+    Post |> posts()
+  end
+
+  @doc """
+  Last 6 posts
+  """
+  def last_posts(limit \\ 7) do
     Post
+    |> limit(^limit)
+    |> order_by(desc: :inserted_at)
+    |> posts()
+  end
+
+  defp posts(query) do
+    query
     |> Repo.all()
     |> Repo.preload(:author)
   end

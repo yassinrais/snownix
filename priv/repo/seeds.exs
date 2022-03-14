@@ -12,15 +12,62 @@
 
 defmodule Snownix.Seeds do
   import Ecto.Query, only: [from: 2]
+  import Snownix.Helper
 
   alias Snownix.Repo
   alias Snownix.Posts.Post
   alias Snownix.Posts.Entity
   alias Snownix.Accounts.User
+  alias Snownix.Navigation.Menu
 
   def import_demo() do
     insert_demo_users()
     insert_demo_posts()
+  end
+
+  def import_start_menus() do
+    Repo.insert_all(Menu, [
+      %{
+        title: "Home",
+        link: "/",
+        newtab: false,
+        status: "active",
+        inserted_at: get_naive_datetime(),
+        updated_at: get_naive_datetime(1_000_000)
+      },
+      %{
+        title: "Blog",
+        link: "/posts",
+        newtab: false,
+        status: "active",
+        inserted_at: get_naive_datetime(),
+        updated_at: get_naive_datetime(1_000_000)
+      },
+      %{
+        title: "Projects",
+        link: "/pages/projects",
+        newtab: false,
+        status: "active",
+        inserted_at: get_naive_datetime(),
+        updated_at: get_naive_datetime(1_000_000)
+      },
+      %{
+        title: "About",
+        link: "/pages/about",
+        newtab: false,
+        status: "active",
+        inserted_at: get_naive_datetime(),
+        updated_at: get_naive_datetime(1_000_000)
+      },
+      %{
+        title: "Github",
+        link: "https://github.com/snownix",
+        newtab: true,
+        status: "active",
+        inserted_at: get_naive_datetime(),
+        updated_at: get_naive_datetime(1_000_000)
+      }
+    ])
   end
 
   def insert_demo_users() do
@@ -31,53 +78,36 @@ defmodule Snownix.Seeds do
         phone: "+212612345678",
         email: "jone@snownix.io",
         hashed_password: "jonepassword",
-        confirmed_at: ~N[2022-01-10 12:01:10],
-        inserted_at: ~N[2022-01-10 12:01:10],
-        updated_at: ~N[2022-01-20 12:01:10],
+        confirmed_at: get_naive_datetime(),
+        inserted_at: get_naive_datetime(),
+        updated_at: get_naive_datetime(1_000_000),
         admin: true
       }
     ])
   end
 
   @doc """
-  Those are only demo blog for testing, source medium
+  Insert random lorem posts
   """
   def insert_demo_posts() do
-    posts = [
-      %{
-        slug: "creating-a-mobile-design-system",
-        title: "Creating a mobile design system",
-        description:
-          "Design systems have been in the spotlight for the past few years, but are still underrepresented in the native apps space. This article will shine some light on mobile design systems, and provide you with practical steps and principles to consider when creating your own mobile design system.",
-        poster: "https://miro.medium.com/max/1400/0*GJJIRw7qxRFgnmAf.png",
-        published_at: ~N[2022-01-15 12:01:10],
-        inserted_at: ~N[2022-01-10 12:01:10],
-        updated_at: ~N[2022-01-20 12:01:10],
-        author_id: select_random_user_id()
-      },
-      %{
-        title: "Leave Aside Git Checkout. Consider Git Switch for a Change",
-        slug: "leave-aside-git-checkout-consider-git-switch-for-a-change",
-        description:
-          "Without looking any further can you tell straight away what git checkout command does? I have asked my team and myself. Nobody including me was able to give a full answer. First, what comes to mind is switching between existing branches. Running a command git checkout main will switch from the current to the branch main. That is a correct answer yet not full.",
-        poster: "https://miro.medium.com/max/770/0*Ye4kcynKFGPVzkYm",
-        published_at: ~N[2022-01-15 12:01:10],
-        inserted_at: ~N[2022-01-10 12:01:10],
-        updated_at: ~N[2022-01-20 12:01:10],
-        author_id: select_random_user_id()
-      },
-      %{
-        slug: "factory-method-design-pattern",
-        title: "Factory Method Design Pattern",
-        description:
-          "The factory method design pattern comes under the category of creational patterns because in the factory method design pattern, it defines creation of an object. The factory method design pattern demonstrates define abstract or inheritance class and let the subclasses decide which object to instantiate. In singleton design pattern, end-user always knows which instance it will return but, in factory method it will return sub instances. As a result of that object instantiation logic is hidden to the end-user.",
-        poster: "https://miro.medium.com/max/770/1*Lc8AYOW4QWzl4iVJOerbwQ.jpeg",
-        published_at: ~N[2022-01-15 12:01:10],
-        inserted_at: ~N[2022-01-10 12:01:10],
-        updated_at: ~N[2022-01-20 12:01:10],
-        author_id: select_random_user_id()
-      }
-    ]
+    posts =
+      Enum.to_list(1..30)
+      |> Enum.map(fn index ->
+        title = Faker.Lorem.paragraph(1..2)
+        description = Faker.Lorem.paragraphs(1..2) |> Enum.join("\n")
+
+        Map.merge(Snownix.Helper.generate_slug(%{title: title}), %{
+          title: title,
+          description: description,
+          poster:
+            "https://source.unsplash.com/random/800x400?" <> String.duplicate("computer,", index),
+          inserted_at: get_naive_datetime(),
+          published_at: get_naive_datetime(1_000_000),
+          updated_at: get_naive_datetime(5_000_000),
+          read_time: reading_time(description),
+          author_id: select_random_user_id()
+        })
+      end)
 
     {_, items} = Repo.insert_all(Post, posts, returning: [:id])
 
@@ -88,15 +118,24 @@ defmodule Snownix.Seeds do
   end
 
   defp generate_random_entities(post) do
-    Enum.to_list(1..5)
-    |> Enum.map(fn order ->
-      Repo.insert(%Entity{
-        post_id: post.id,
-        body: Faker.Lorem.paragraphs(2..3) |> Enum.join("\n"),
-        type: "text",
-        order: order
-      })
-    end)
+    read_time = if is_integer(post.read_time), do: post.read_time, else: 0
+
+    read_time =
+      Enum.reduce(Enum.to_list(1..5), read_time, fn order, total ->
+        body = Faker.Lorem.paragraphs(2..3) |> Enum.join("\n")
+
+        Repo.insert(%Entity{
+          post_id: post.id,
+          body: body,
+          type: "text",
+          order: order
+        })
+
+        total + reading_time(body)
+      end)
+
+    Ecto.Changeset.change(post, read_time: read_time)
+    |> Repo.update!()
   end
 
   defp select_random_user_id() do
@@ -110,11 +149,19 @@ defmodule Snownix.Seeds do
       _ -> nil
     end
   end
+
+  defp get_naive_datetime() do
+    NaiveDateTime.utc_now() |> NaiveDateTime.truncate(:second)
+  end
+
+  defp get_naive_datetime(time_to_add) do
+    get_naive_datetime() |> NaiveDateTime.add(time_to_add)
+  end
 end
 
-if Application.get_env(:snownix, :environment) == :prod do
-  # prod branch
-else
-  # dev/test branch
+# dev/test branch
+if Application.get_env(:snownix, :environment) != :prod do
   Snownix.Seeds.import_demo()
 end
+
+Snownix.Seeds.import_start_menus()

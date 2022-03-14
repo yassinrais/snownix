@@ -1,6 +1,6 @@
 <section class="bg-white">
     <div class="container flex flex-col items-center px-4 py-8 mx-auto space-y-8 overflow-hidden sm:px-6 lg:px-8">
-        <form phx-change="change-lang" class="w-max"  phx-target={@myself}>
+        <form phx-hook="Lang" id="select-lang">
             <select name="lang" id="lang">
                 <%= for {title, val} <- get_langs() do %>
                 <option value={val} selected={@locale == val}><%=title%></option>
@@ -9,48 +9,48 @@
         </form>
         <nav class="flex flex-wrap justify-center -mx-5 -my-2">
             <div class="px-5 py-2">
-                <a href="#" class="text-base leading-6 text-gray-500 hover:text-gray-900">
+                <a href="#" class="text-base leading-6 text-gray-700 hover:text-gray-900">
                     About
                 </a>
             </div>
             <div class="px-5 py-2">
-                <a href="#" class="text-base leading-6 text-gray-500 hover:text-gray-900">
+                <a href="#" class="text-base leading-6 text-gray-700 hover:text-gray-900">
                     Blog
                 </a>
             </div>
             <div class="px-5 py-2">
-                <a href="#" class="text-base leading-6 text-gray-500 hover:text-gray-900">
+                <a href="#" class="text-base leading-6 text-gray-700 hover:text-gray-900">
                     Projects
                 </a>
             </div>
             <div class="px-5 py-2">
-                <a href="#" class="text-base leading-6 text-gray-500 hover:text-gray-900">
+                <a href="#" class="text-base leading-6 text-gray-700 hover:text-gray-900">
                     Terms
                 </a>
             </div>
         </nav>
         <div class="flex justify-center mt-8 space-x-6">
-            <a href="#" class="text-gray-400 hover:text-gray-500">
+            <a href="#" class="text-gray-500 hover:text-gray-500">
                 <span class="sr-only">Instagram</span>
                 <%= render SnownixWeb.IconsView, "instagram.svg", %{} %>
             </a>
-            <a href="#" class="text-gray-400 hover:text-gray-500">
+            <a href="#" class="text-gray-500 hover:text-gray-500">
                 <span class="sr-only">Twitter</span>
                 <%= render SnownixWeb.IconsView, "twitter.svg", %{} %>
             </a>
-            <a href="#" class="text-gray-400 hover:text-gray-500">
+            <a href="#" class="text-gray-500 hover:text-gray-500">
                 <span class="sr-only">GitHub</span>
                 <%= render SnownixWeb.IconsView, "github.svg", %{} %>
             </a>
-            <a href="#" class="text-gray-400 hover:text-gray-500">
+            <a href="#" class="text-gray-500 hover:text-gray-500">
                 <span class="sr-only">Dribbble</span>
                 <%= render SnownixWeb.IconsView, "dribbble.svg", %{} %>
             </a>
-            <a href="#" class="text-gray-400 hover:text-gray-500">
+            <a href="#" class="text-gray-500 hover:text-gray-500">
                 <span class="sr-only">Behance</span>
                 <%= render SnownixWeb.IconsView, "behance.svg", %{} %>
             </a>
         </div>
-        <p class="mt-8 text-base leading-6 text-center text-gray-400">© <%= Date.utc_today().year %> <%= assigns[:app_name] || "Snownix" %>. All rights reserved.</p>
+        <p class="mt-8 text-base leading-6 text-center text-gray-500">© <%= Date.utc_today().year %> <%= assigns[:app_name] || "Snownix" %>. All rights reserved.</p>
     </div>
 </section>

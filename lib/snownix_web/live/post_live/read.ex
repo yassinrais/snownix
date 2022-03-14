@@ -19,10 +19,14 @@ defmodule SnownixWeb.PostLive.Read do
     post = Posts.get_post_by_slug!(slug)
 
     socket
-    |> assign(:page_title, gettext("Post %{title}", title: post.title))
     |> assign(
       :post,
       post
     )
+    |> put_meta_tags(%{
+      page_title: gettext("%{title}", title: post.title),
+      page_desc: (post.description |> String.slice(0, 160)) <> "...",
+      page_image: post.poster
+    })
   end
 end
