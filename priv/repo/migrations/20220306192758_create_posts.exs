@@ -17,5 +17,7 @@ defmodule Snownix.Repo.Migrations.CreatePosts do
 
       timestamps()
     end
+
+    create index(:posts, [:slug], unique: true)
   end
 end

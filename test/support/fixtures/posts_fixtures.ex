@@ -21,4 +21,21 @@ defmodule Snownix.PostsFixtures do
 
     post
   end
+
+  @doc """
+  Generate a category.
+  """
+  def category_fixture(attrs \\ %{}) do
+    {:ok, category} =
+      attrs
+      |> Enum.into(%{
+        description: "some description",
+        slug: "some slug",
+        status: "some status",
+        title: "some title"
+      })
+      |> Snownix.Posts.create_category()
+
+    category
+  end
 end

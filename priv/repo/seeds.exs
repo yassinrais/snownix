@@ -15,14 +15,30 @@ defmodule Snownix.Seeds do
   import Snownix.Helper
 
   alias Snownix.Repo
-  alias Snownix.Posts.Post
-  alias Snownix.Posts.Entity
+  alias Snownix.Posts.{Post, Category, Entity}
   alias Snownix.Accounts.User
   alias Snownix.Navigation.Menu
 
   def import_demo() do
     insert_demo_users()
+    insert_demo_categories()
     insert_demo_posts()
+  end
+
+  def insert_demo_users() do
+    Repo.insert_all(User, [
+      %{
+        username: "jone",
+        fullname: "Jone Doe",
+        phone: "+212612345678",
+        email: "jone@snownix.io",
+        hashed_password: "jonepassword",
+        confirmed_at: get_naive_datetime(),
+        inserted_at: get_naive_datetime(),
+        updated_at: get_naive_datetime(1_000_000),
+        admin: true
+      }
+    ])
   end
 
   def import_start_menus() do
@@ -70,18 +86,31 @@ defmodule Snownix.Seeds do
     ])
   end
 
-  def insert_demo_users() do
-    Repo.insert_all(User, [
+  def insert_demo_categories() do
+    Repo.insert_all(Category, [
       %{
-        username: "jone",
-        fullname: "Jone Doe",
-        phone: "+212612345678",
-        email: "jone@snownix.io",
-        hashed_password: "jonepassword",
-        confirmed_at: get_naive_datetime(),
+        title: "Frontend",
+        slug: "frontend",
+        status: "active",
+        description: Faker.Lorem.paragraphs(1..2) |> Enum.join("\n"),
         inserted_at: get_naive_datetime(),
-        updated_at: get_naive_datetime(1_000_000),
-        admin: true
+        updated_at: get_naive_datetime(1_000_000)
+      },
+      %{
+        title: "Backend",
+        slug: "backend",
+        status: "active",
+        description: Faker.Lorem.paragraphs(1..2) |> Enum.join("\n"),
+        inserted_at: get_naive_datetime(),
+        updated_at: get_naive_datetime(1_000_000)
+      },
+      %{
+        title: "Linux",
+        slug: "linux",
+        status: "active",
+        description: Faker.Lorem.paragraphs(1..2) |> Enum.join("\n"),
+        inserted_at: get_naive_datetime(),
+        updated_at: get_naive_datetime(1_000_000)
       }
     ])
   end

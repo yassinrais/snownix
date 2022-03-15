@@ -64,4 +64,64 @@ defmodule Snownix.PostsTest do
       assert %Ecto.Changeset{} = Posts.change_post(post)
     end
   end
+
+  describe "categories" do
+    alias Snownix.Posts.Category
+
+    import Snownix.PostsFixtures
+
+    @invalid_attrs %{description: nil, slug: nil, status: nil, title: nil}
+
+    test "list_categories/0 returns all categories" do
+      category = category_fixture()
+      assert Posts.list_categories() == [category]
+    end
+
+    test "get_category!/1 returns the category with given id" do
+      category = category_fixture()
+      assert Posts.get_category!(category.id) == category
+    end
+
+    test "create_category/1 with valid data creates a category" do
+      valid_attrs = %{description: "some description", slug: "some slug", status: "some status", title: "some title"}
+
+      assert {:ok, %Category{} = category} = Posts.create_category(valid_attrs)
+      assert category.description == "some description"
+      assert category.slug == "some slug"
+      assert category.status == "some status"
+      assert category.title == "some title"
+    end
+
+    test "create_category/1 with invalid data returns error changeset" do
+      assert {:error, %Ecto.Changeset{}} = Posts.create_category(@invalid_attrs)
+    end
+
+    test "update_category/2 with valid data updates the category" do
+      category = category_fixture()
+      update_attrs = %{description: "some updated description", slug: "some updated slug", status: "some updated status", title: "some updated title"}
+
+      assert {:ok, %Category{} = category} = Posts.update_category(category, update_attrs)
+      assert category.description == "some updated description"
+      assert category.slug == "some updated slug"
+      assert category.status == "some updated status"
+      assert category.title == "some updated title"
+    end
+
+    test "update_category/2 with invalid data returns error changeset" do
+      category = category_fixture()
+      assert {:error, %Ecto.Changeset{}} = Posts.update_category(category, @invalid_attrs)
+      assert category == Posts.get_category!(category.id)
+    end
+
+    test "delete_category/1 deletes the category" do
+      category = category_fixture()
+      assert {:ok, %Category{}} = Posts.delete_category(category)
+      assert_raise Ecto.NoResultsError, fn -> Posts.get_category!(category.id) end
+    end
+
+    test "change_category/1 returns a category changeset" do
+      category = category_fixture()
+      assert %Ecto.Changeset{} = Posts.change_category(category)
+    end
+  end
 end

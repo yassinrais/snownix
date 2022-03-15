@@ -58,6 +58,13 @@ defmodule SnownixWeb.Router do
 
         live "/posts/:id", PostLive.Show, :show
         live "/posts/:id/show/edit", PostLive.Show, :edit
+
+        live "/categories", CategoryLive.Index, :index
+        live "/categories/new", CategoryLive.Index, :new
+        live "/categories/:id/edit", CategoryLive.Index, :edit
+
+        live "/categories/:id", CategoryLive.Show, :show
+        live "/categories/:id/show/edit", CategoryLive.Show, :edit
       end
 
       scope "/auth" do

@@ -1,6 +1,7 @@
 defmodule Snownix.Posts.Post do
   use Ecto.Schema
   import Ecto.Changeset
+  import Snownix.Helper
 
   @primary_key {:id, :binary_id, autogenerate: true}
 
@@ -23,9 +24,12 @@ defmodule Snownix.Posts.Post do
 
   @doc false
   def changeset(post, attrs) do
+    attrs = Map.merge(attrs, generate_slug(attrs))
+
     post
     |> cast(attrs, [:slug, :title, :poster, :description, :published_at, :author_id, :entities])
-    |> cast_assoc(:entities)
     |> validate_required([:slug, :title, :poster, :description, :published_at])
+    |> unique_constraint(:slug)
+    |> cast_assoc(:entities)
   end
 end
