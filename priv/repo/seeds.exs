@@ -125,25 +125,26 @@ defmodule Snownix.Seeds do
         title = Faker.Lorem.paragraph(1..2)
         description = Faker.Lorem.paragraphs(1..2) |> Enum.join("\n")
 
-        Map.merge(Snownix.Helper.generate_slug(%{title: title}), %{
-          title: title,
-          description: description,
-          poster:
-            "https://source.unsplash.com/random/800x400?" <> String.duplicate("computer,", index),
-          inserted_at: get_naive_datetime(),
-          published_at: get_naive_datetime(1_000_000),
-          updated_at: get_naive_datetime(5_000_000),
-          read_time: reading_time(description),
-          author_id: select_random_user_id()
-        })
+        post =
+          Map.merge(Snownix.Helper.generate_slug(%{title: title}), %{
+            title: title,
+            description: description,
+            poster:
+              "https://source.unsplash.com/random/800x400?" <>
+                String.duplicate("computer,", index),
+            inserted_at: get_naive_datetime(),
+            published_at: get_naive_datetime(1_000_000),
+            updated_at: get_naive_datetime(5_000_000),
+            read_time: reading_time(description)
+          })
+
+        %Post{}
+        |> Post.changeset(post)
+        |> Ecto.Changeset.put_assoc(:author, select_random_user())
+        |> Ecto.Changeset.put_assoc(:categories, select_random_categories())
+        |> Repo.insert!()
+        |> generate_random_entities()
       end)
-
-    {_, items} = Repo.insert_all(Post, posts, returning: [:id])
-
-    items
-    |> Enum.map(fn post ->
-      generate_random_entities(post)
-    end)
   end
 
   defp generate_random_entities(post) do
@@ -167,16 +168,21 @@ defmodule Snownix.Seeds do
     |> Repo.update!()
   end
 
-  defp select_random_user_id() do
-    query =
-      from t in User,
-        order_by: fragment("RANDOM()"),
-        limit: 1
+  defp select_random_user() do
+    from(t in User,
+      order_by: fragment("RANDOM()"),
+      limit: 1
+    )
+    |> Repo.all()
+    |> List.first()
+  end
 
-    case Repo.all(query) |> List.first() do
-      user -> user.id
-      _ -> nil
-    end
+  defp select_random_categories() do
+    query =
+      from t in Category,
+        order_by: fragment("RANDOM()")
+
+    Repo.all(query)
   end
 
   defp get_naive_datetime() do

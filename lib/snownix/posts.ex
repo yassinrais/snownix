@@ -18,13 +18,14 @@ defmodule Snownix.Posts do
 
   """
   def list_posts() do
-    Post |> posts()
+    Post
+    |> posts()
   end
 
   @doc """
   Last 6 posts
   """
-  def last_posts(limit \\ 7) do
+  def last_posts(limit \\ 6) do
     Post
     |> limit(^limit)
     |> order_by(desc: :inserted_at)
@@ -35,6 +36,7 @@ defmodule Snownix.Posts do
     query
     |> Repo.all()
     |> Repo.preload(:author)
+    |> Repo.preload(:categories)
   end
 
   @doc """
@@ -57,6 +59,7 @@ defmodule Snownix.Posts do
     Repo.get_by!(Post, slug: slug)
     |> Repo.preload(:author)
     |> Repo.preload(:entities)
+    |> Repo.preload(:categories)
   end
 
   @doc """

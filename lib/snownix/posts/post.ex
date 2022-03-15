@@ -6,7 +6,7 @@ defmodule Snownix.Posts.Post do
   @primary_key {:id, :binary_id, autogenerate: true}
 
   alias Snownix.Accounts.User
-  alias Snownix.Posts.Entity
+  alias Snownix.Posts.{Entity, Category}
 
   schema "posts" do
     field :description, :string
@@ -14,10 +14,12 @@ defmodule Snownix.Posts.Post do
     field :published_at, :naive_datetime
     field :slug, :string
     field :title, :string
-    field :read_time, :integer
+    field :read_time, :integer, default: 0
 
     belongs_to :author, User, type: :binary_id
+
     has_many :entities, Entity
+    many_to_many :categories, Category, join_through: "posts_categories"
 
     timestamps()
   end
@@ -27,9 +29,14 @@ defmodule Snownix.Posts.Post do
     attrs = Map.merge(attrs, generate_slug(attrs))
 
     post
-    |> cast(attrs, [:slug, :title, :poster, :description, :published_at, :author_id, :entities])
+    |> cast(attrs, [
+      :slug,
+      :title,
+      :poster,
+      :description,
+      :published_at
+    ])
     |> validate_required([:slug, :title, :poster, :description, :published_at])
     |> unique_constraint(:slug)
-    |> cast_assoc(:entities)
   end
 end

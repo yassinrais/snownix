@@ -8,10 +8,21 @@ defmodule Snownix.PostsTest do
 
     import Snownix.PostsFixtures
 
-    @invalid_attrs %{description: nil, poster: nil, published_at: nil, slug: nil, title: nil}
+    @invalid_attrs %{
+      description: nil,
+      poster: nil,
+      published_at: nil,
+      slug: nil,
+      title: nil,
+      read_time: nil
+    }
 
     test "list_posts/0 returns all posts" do
-      post = post_fixture()
+      post =
+        post_fixture()
+        |> Repo.preload(:author)
+        |> Repo.preload(:categories)
+
       assert Posts.list_posts() == [post]
     end
 
@@ -20,14 +31,30 @@ defmodule Snownix.PostsTest do
       assert Posts.get_post!(post.id) == post
     end
 
+    test "get_post!/1 returns the post with given slug" do
+      post =
+        post_fixture()
+        |> Repo.preload(:author)
+        |> Repo.preload(:entities)
+        |> Repo.preload(:categories)
+
+      assert Posts.get_post_by_slug!(post.slug) == post
+    end
+
     test "create_post/1 with valid data creates a post" do
-      valid_attrs = %{description: "some description", poster: "some poster", published_at: ~N[2022-03-05 19:27:00], slug: "some slug", title: "some title"}
+      valid_attrs = %{
+        description: "some description",
+        poster: "some poster",
+        published_at: ~N[2022-03-05 19:27:00],
+        slug: "some-title",
+        title: "some title"
+      }
 
       assert {:ok, %Post{} = post} = Posts.create_post(valid_attrs)
       assert post.description == "some description"
       assert post.poster == "some poster"
       assert post.published_at == ~N[2022-03-05 19:27:00]
-      assert post.slug == "some slug"
+      assert post.slug == "some-title"
       assert post.title == "some title"
     end
 
@@ -37,13 +64,20 @@ defmodule Snownix.PostsTest do
 
     test "update_post/2 with valid data updates the post" do
       post = post_fixture()
-      update_attrs = %{description: "some updated description", poster: "some updated poster", published_at: ~N[2022-03-06 19:27:00], slug: "some updated slug", title: "some updated title"}
+
+      update_attrs = %{
+        description: "some updated description",
+        poster: "some updated poster",
+        published_at: ~N[2022-03-06 19:27:00],
+        slug: "some-updated-title",
+        title: "some updated title"
+      }
 
       assert {:ok, %Post{} = post} = Posts.update_post(post, update_attrs)
       assert post.description == "some updated description"
       assert post.poster == "some updated poster"
       assert post.published_at == ~N[2022-03-06 19:27:00]
-      assert post.slug == "some updated slug"
+      assert post.slug == "some-updated-title"
       assert post.title == "some updated title"
     end
 
@@ -83,11 +117,16 @@ defmodule Snownix.PostsTest do
     end
 
     test "create_category/1 with valid data creates a category" do
-      valid_attrs = %{description: "some description", slug: "some slug", status: "some status", title: "some title"}
+      valid_attrs = %{
+        description: "some description",
+        slug: "some-title",
+        status: "some status",
+        title: "some title"
+      }
 
       assert {:ok, %Category{} = category} = Posts.create_category(valid_attrs)
       assert category.description == "some description"
-      assert category.slug == "some slug"
+      assert category.slug == "some-title"
       assert category.status == "some status"
       assert category.title == "some title"
     end
@@ -98,11 +137,17 @@ defmodule Snownix.PostsTest do
 
     test "update_category/2 with valid data updates the category" do
       category = category_fixture()
-      update_attrs = %{description: "some updated description", slug: "some updated slug", status: "some updated status", title: "some updated title"}
+
+      update_attrs = %{
+        description: "some updated description",
+        slug: "some-updated-title",
+        status: "some updated status",
+        title: "some updated title"
+      }
 
       assert {:ok, %Category{} = category} = Posts.update_category(category, update_attrs)
       assert category.description == "some updated description"
-      assert category.slug == "some updated slug"
+      assert category.slug == "some-updated-title"
       assert category.status == "some updated status"
       assert category.title == "some updated title"
     end

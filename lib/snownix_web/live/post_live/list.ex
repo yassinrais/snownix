@@ -33,7 +33,10 @@ defmodule SnownixWeb.PostLive.List do
 
     pagination = %{
       pagination
-      | items: pagination.items |> Repo.preload(:author)
+      | items:
+          pagination.items
+          |> Repo.preload(:author)
+          |> Repo.preload(:categories)
     }
 
     socket |> assign(:pagination, pagination)
