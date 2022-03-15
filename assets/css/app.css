@@ -5,7 +5,7 @@
 @import "./post.css";
 
 html{
-    @apply font-primary;
+    @apply font-primary scroll-smooth;
 }
 
 input, button, select, .btn {

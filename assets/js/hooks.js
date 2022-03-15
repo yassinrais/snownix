@@ -15,6 +15,11 @@ const Hooks = {
                 window.location = parser.href;
             });
         }
+    },
+    ScrollOnUpdate: {
+        updated() {
+            this.el.scrollIntoView();
+        }
     }
 }
 

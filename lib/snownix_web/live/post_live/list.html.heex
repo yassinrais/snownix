@@ -1,5 +1,5 @@
 <.live_component module={SnownixWeb.SharedLive.AlertsComponent} flash={@flash} id="index-alerts" />
-<section class="py-4 max-w-7xl">
+<section id="posts" class="py-4 max-w-7xl" phx-hook="ScrollOnUpdate">
   <div class="grid grid-cols-1 gap-12 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3">
     <%= for post <- @pagination.items do %>
       <.live_component module={SnownixWeb.PostLive.Components.PostGridComponent} post={post} id={"post-#{post.id}"} />
