@@ -1,6 +1,6 @@
 <div class="px-4 py-4 md:py-14 mx-auto sm:max-w-xl md:max-w-full lg:max-w-screen-lg md:px-24 lg:px-8 space-y-12 ">
   <%# Hero %>
-  <div class="md:mx-auto sm:text-center lg:max-w-4xl space-y-6 md:space-y-12">
+  <div class="md:mx-auto sm:text-center lg:max-w-4xl space-y-6 md:space-y-4">
     <h2
       class=" font-sans text-xl md:text-3xl font-bold leading-none tracking-tight text-gray-900 sm:text-4xl md:mx-auto">
       <span class="hidden relative md:inline-block">
@@ -19,6 +19,16 @@
     <p class="text-base text-gray-700 md:text-lg">
       <%= @post.description %>
     </p>
+    
+    <%= if length(@post.categories) do %>
+        <div class="post__categories">
+        <%= for category <- @post.categories do %>
+            <a class="post__category">
+                <%= category.title %>
+            </a>
+        <% end %>
+        </div>
+    <% end %>
   </div>
   <%# Poster %>
   <div class="flex flex-col items-center mx-auto space-y-14 lg:max-w-4xl">
@@ -51,6 +61,7 @@
           <span><%= @post.read_time %> min read</span>
         </div>
     </div>
+
   </div>
   <%# Entities %>
   <div class="flex flex-col md:mx-auto  prose space-y-8 lg:max-w-4xl">

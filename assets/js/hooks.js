@@ -1,5 +1,4 @@
-import SimpleMDE from 'simplemde';
-import { marked } from 'marked';
+import Mde from 'easymde';
 
 const Hooks = {
     Flash: {
@@ -49,22 +48,23 @@ const Hooks = {
     },
     Markdown: {
         mounted() {
-            const simplemde = new SimpleMDE({
+            const mde = new Mde({
                 element: this.el,
-                previewRender: function (plainText) {
-                    return marked(plainText); // Returns HTML from a custom parser
-                },
+                uploadImage: true,
+                imageUploadFunction: (file, s, e) => {
+                    console.log('file : ', file)
+                }
             });
 
 
             let targetTextarea = this.getTarget(this.el.getAttribute('id'));
 
-            simplemde.codemirror.on("change", function () {
+            mde.codemirror.on("change", function () {
                 if (!targetTextarea) {
                     targetTextarea = this.getTarget(this.el.getAttribute('id'));
                 }
                 if (targetTextarea) {
-                    targetTextarea.value = simplemde.value();
+                    targetTextarea.value = mde.value();
                 }
             });
         },

@@ -1,3 +1,41 @@
-<div>
-Profile <%= @username %>
-</div>
+<section class="profile__header">
+    <div class="profile__banner"></div>
+    <div class="profile__avatar">
+        <img src={get_user_avatar(@profile)} alt={"#{@username} Avatar"}>
+    </div>
+    <h1>
+        <%= @profile.fullname %>
+    </h1>
+    <a href={Routes.account_profile_path(@socket, :index, @username)}>
+        @<%= @username %>
+    </a>
+</section>
+
+<section id="posts" class="py-4 max-w-7xl" phx-hook="ScrollOnUpdate">
+    <div class="grid grid-cols-1 gap-12 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3">
+        <%= for post <- @pagination.items do %>
+            <.live_component module={SnownixWeb.PostLive.Components.PostGridComponent} post={post}
+                id={"post-#{post.id}"} />
+        <% end %>
+    </div>
+    <%= if !(@pagination.page <=1 && !@pagination.has_next) do %>
+        <div
+            class="flex flex-col items-center justify-center mt-20 space-x-0 space-y-2 md:space-x-2 md:space-y-0 md:flex-row">
+            <button disabled={!@pagination.has_prev} phx-value-page={@pagination.prev_page} phx-click="page"
+                class="w-full rounded-full btn btn-light btn-xl md:w-auto">
+                Prev Page
+            </button>
+
+            <div class="flex space-x-2">
+                <button class="btn" disabled>
+                    <%= @pagination.page %>/<%= @pagination.total %>
+                </button>
+            </div>
+
+            <button disabled={!@pagination.has_next} phx-value-page={@pagination.next_page} phx-click="page"
+                class="w-full rounded-full btn btn-light btn-xl md:w-auto">
+                Next Page
+            </button>
+        </div>
+    <% end %>
+</section>

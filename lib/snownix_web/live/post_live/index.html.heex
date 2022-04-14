@@ -3,7 +3,7 @@
 <%= if @live_action in [:new, :edit] do %>
   <.modal return_to={Routes.post_index_path(@socket, :index)}>
     <.live_component
-      module={SnownixWeb.PostLive.FormComponent}
+      module={SnownixWeb.PostLive.Components.FormComponent}
       id={@post.id || :new}
       title={@page_title}
       action={@live_action}
@@ -16,9 +16,9 @@
 <table>
   <thead>
     <tr>
+      <th>Poster</th>
       <th>Slug</th>
       <th>Title</th>
-      <th>Poster</th>
       <th>Description</th>
       <th>Published at</th>
 
@@ -28,9 +28,9 @@
   <tbody id="posts">
     <%= for post <- @posts do %>
       <tr id={"post-#{post.id}"}>
+        <td><img src={get_post_poster(post, :thumb)}></td>
         <td><%= post.slug %></td>
         <td><%= post.title %></td>
-        <td><img src={post.poster}></td>
         <td><%= post.description %></td>
         <td><%= post.published_at %></td>
 

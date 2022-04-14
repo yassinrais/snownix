@@ -4,6 +4,7 @@ defmodule SnownixWeb.PostLive.New do
   alias Snownix.Posts
   alias Snownix.Posts.Post
   alias Snownix.Posts.Entity
+  alias Snownix.Posts.Category
 
   def mount(_params, _session, socket) do
     {:ok,
@@ -31,7 +32,6 @@ defmodule SnownixWeb.PostLive.New do
   defp assign_post(socket) do
     entities = [
       %Entity{
-        tmp_id: get_temp_id(),
         body:
           "**Prerequisites**\nYou will have a much easier time understanding the ways for setting up the MongoDB to PostgreSQL connection if you have gone through the following aspects:\n\n* An active MongoDB account.\n* Ac active PostgreSQL account.\n* Working knowledge of Databases.\n* Clear idea regarding the type of data to be transferred.\n\n**Method 1**: Manual ETL Process to Set Up MongoDB to PostgreSQL Integration\n\nThis would need you to deploy engineering resources to extract data from MongoDB, convert the JSON output to CSV, and load data to PostgreSQL.\n\nMethod 2: Using Hevo Data to Set Up MongoDB to PostgreSQL Integration\n\nHevo Data is an automated Data Pipeline platform that can move your data from MongoDB to PostgreSQL very quickly without writing a single line of code. It is simple, hassle-free, and reliable.\n\nMoreover, Hevo offers a fully-managed solution to set up data integration from MongoDB and 100+ other data sources (including 30+ free data sources) and will let you directly load data to Databases such as PostgreSQL, Data Warehouses, or the destination of your choice. It will automate your data flow in minutes without writing any line of code. Its Fault-Tolerant architecture makes sure that your data is secure and consistent. Hevo provides you with a truly efficient and fully automated solution to manage data in real-time and always have analysis-ready data."
       }
@@ -42,7 +42,8 @@ defmodule SnownixWeb.PostLive.New do
       description:
         "DMS is a great tool which can be used to migrate data between different types of databases – including Mongo to Postgres transfer",
       entities: entities,
-      published_at: NaiveDateTime.utc_now()
+      published_at: NaiveDateTime.utc_now(),
+      categories: []
     }
 
     socket
@@ -90,7 +91,10 @@ defmodule SnownixWeb.PostLive.New do
   end
 
   def handle_event("save", %{"post" => post_params}, socket) do
-    case Posts.create_post(post_params) do
+    author = socket.assigns.current_user
+    categories = socket.assigns.categories
+
+    case Posts.create_post(author, post_params, categories) do
       {:ok, post} ->
         consume_uploaded_entries(socket, :images, fn meta, entry ->
           {:ok,
@@ -141,8 +145,35 @@ defmodule SnownixWeb.PostLive.New do
     title = title |> String.trim()
 
     case Enum.find(socket.assigns.categories, &(&1.id == id || &1.title == title)) do
-      nil -> socket |> assign(:categories, [%{id: id, title: title} | socket.assigns.categories])
-      _ -> socket
+      nil ->
+        category =
+          socket.assigns.list_categories
+          |> Enum.find(fn c -> c.id == id end)
+
+        socket
+        |> assign(
+          :categories,
+          [
+            case is_nil(category) do
+              true ->
+                case Snownix.Helper.generate_slug(%{title: title}) do
+                  %{slug: slug} ->
+                    %Category{id: get_id(), title: title, slug: slug}
+
+                  _ ->
+                    nil
+                end
+
+              _ ->
+                category
+            end
+            | socket.assigns.categories
+          ]
+          |> Enum.reject(&is_nil(&1))
+        )
+
+      _ ->
+        socket
     end
   end
 
@@ -150,7 +181,7 @@ defmodule SnownixWeb.PostLive.New do
     id = id |> String.trim()
 
     case socket.assigns.list_categories |> Enum.find(&(&1.id == id || &1.title == id)) do
-      %Snownix.Posts.Category{id: cat_id, title: title} ->
+      %Category{id: cat_id, title: title} ->
         socket |> append_item_to_list(:categories, %{"id" => cat_id, "title" => title})
 
       _ ->
@@ -166,5 +197,5 @@ defmodule SnownixWeb.PostLive.New do
 
   defp drop_item_from_list(socket, _, _), do: socket
 
-  defp get_temp_id, do: Ecto.UUID.generate()
+  defp get_id, do: Ecto.UUID.generate()
 end

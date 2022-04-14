@@ -9,7 +9,7 @@
     "tailwindcss": "^3.0.23"
   },
   "dependencies": {
-    "marked": "^4.0.14",
+    "easymde": "^2.16.1",
     "simplemde": "^1.11.2"
   }
 }

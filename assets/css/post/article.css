@@ -54,11 +54,15 @@ article .post__poster {
   @apply relative;
 }
 
-article .post__categories {
+article .post__times {
+  @apply flex flex-col items-end;
+}
+
+.post__categories {
   @apply space-x-2 mt-4;
 }
 
-article .post__category {
+.post__category {
   @apply px-2 py-1 rounded-full bg-dark text-xs  text-light bg-opacity-80;
 }
 

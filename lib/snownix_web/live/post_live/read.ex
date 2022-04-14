@@ -26,6 +26,7 @@ defmodule SnownixWeb.PostLive.Read do
     |> put_meta_tags(%{
       page_title: gettext("%{title}", title: post.title),
       page_desc: (post.description |> String.slice(0, 160)) <> "...",
+      page_author: if(post.author, do: post.author.username, else: nil),
       page_image: get_post_poster(post, :original)
     })
   end

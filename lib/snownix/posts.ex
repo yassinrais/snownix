@@ -10,6 +10,8 @@ defmodule Snownix.Posts do
   alias Snownix.Posts.Post
   alias Snownix.Posts.Entity
 
+  alias Snownix.Accounts.User
+
   @doc """
   Returns the list of posts.
 
@@ -30,7 +32,7 @@ defmodule Snownix.Posts do
   def last_posts(limit \\ 6) do
     Post
     |> limit(^limit)
-    |> order_by(desc: :inserted_at)
+    |> order_by(desc: :published_at)
     |> posts()
   end
 
@@ -44,7 +46,12 @@ defmodule Snownix.Posts do
 
   def order_posts(query) do
     query
-    |> order_by(desc: :inserted_at)
+    |> order_by(desc: :published_at)
+  end
+
+  def by_user(query, username) do
+    query
+    |> join(:inner, [p], u in User, on: p.author_id == u.id and u.username == ^username)
   end
 
   @doc """
@@ -82,9 +89,11 @@ defmodule Snownix.Posts do
       {:error, %Ecto.Changeset{}}
 
   """
-  def create_post(attrs \\ %{}) do
+  def create_post(author, attrs \\ %{}, categories \\ []) do
     %Post{}
     |> Post.changeset(attrs)
+    |> Post.author_changeset(author)
+    |> Post.categories_changeset(categories)
     |> Post.read_time_changeset()
     |> Repo.insert()
   end

@@ -196,4 +196,10 @@ defmodule SnownixWeb.LiveHelpers do
       <meta name={name} content={content}>
     """
   end
+
+  def tag_has_error(form, field) do
+    form.errors
+    |> Keyword.get_values(field)
+    |> Enum.count() > 0
+  end
 end

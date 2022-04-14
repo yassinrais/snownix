@@ -34,6 +34,24 @@
   @apply flex flex-col space-y-4 w-full max-w-xs;
 }
 
+.post__form .input__title {
+  @apply flex w-full items-center;
+}
+
+.editor-preview-side.editor-preview.editor-preview-active-side {
+  margin-left: 50%;
+}
+
+.post__form * .field__error input,
+.post__form * .field__error textarea,
+.post__form * .field__error svg {
+  @apply text-red-500 !border-red-500 fill-red-500 placeholder-red-500;
+}
+
+.post__form .form__actions {
+  @apply flex flex-wrap md:flex-nowrap md:space-x-2 space-y-2 md:space-y-0;
+}
+
 .input__multiselect {
   @apply flex px-2 py-2;
 }

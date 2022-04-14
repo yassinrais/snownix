@@ -45,6 +45,8 @@ defmodule Snownix.Posts.Post do
     ])
     |> filter_changeset()
     |> validate_required([:slug, :title, :description])
+    |> validate_length(:title, min: 10, max: 225)
+    |> validate_length(:description, min: 10, max: 400)
     |> unique_constraint(:slug)
     |> cast_assoc(:entities, with: &Entity.changeset/2, required: true)
   end
@@ -65,9 +67,29 @@ defmodule Snownix.Posts.Post do
     |> cast_attachments(attrs, [:poster])
   end
 
+  def author_changeset(post, author) do
+    post
+    |> put_change(:author, author)
+  end
+
+  def categories_changeset(post, categories) do
+    post
+    |> put_assoc(:categories, categories)
+  end
+
   defp filter_changeset(changeset) do
     changeset
-    |> update_change(:title, &String.trim/1)
-    |> update_change(:description, &String.trim/1)
+    |> update_change(:title, &Snownix.Posts.Post.trim_text/1)
+    |> update_change(:description, &Snownix.Posts.Post.trim_text/1)
+  end
+
+  def trim_text(text \\ nil) do
+    case text do
+      nil ->
+        nil
+
+      _ ->
+        String.trim(text)
+    end
   end
 end
