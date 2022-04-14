@@ -12,11 +12,18 @@ defmodule Snownix.Helper do
   def generate_slug(params) do
     case !is_nil(params[:title]) do
       true ->
-        %{slug: Slug.slugify(params[:title])}
+        %{slug: slugify_title(params[:title])}
 
       false ->
-        %{}
+        case !is_nil(params["title"]) do
+          true -> %{"slug" => slugify_title(params["title"])}
+          false -> %{}
+        end
     end
+  end
+
+  defp slugify_title(title) do
+    Slug.slugify(title)
   end
 
   @split_pattern [" ", "\n", "\r", "\t"]

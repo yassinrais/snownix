@@ -1,0 +1,81 @@
+<.form let={f} for={@changeset} phx-submit="save"  class={"post__form" <> (if @fullscreen, do: " full__screen", else: "")} autocomplete="off" phx-change="validate">
+        <.live_component module={SnownixWeb.SharedLive.AlertsComponent} flash={@flash} id="alerts" />
+    <div class="form__header md:space-x-7">
+        <div class="flex w-full items-center">
+            <%= render SnownixWeb.IconsView, "title.svg" , %{} %>
+            <%= text_input f, :title, class: "py-4 border-none focus:outline-none text-xl", placeholder: gettext("Title") %>
+        </div>
+        <div class="flex flex-wrap md:flex-nowrap md:space-x-2 space-y-2 md:space-y-0">
+            <button class="btn icon !w-auto h-max text-gray-400" btn-open type="button" phx-click="tfullscreen">
+                <%= render SnownixWeb.IconsView, "fullscreen-open.svg" , %{} %>
+            </button>
+            <button class="btn icon !w-auto h-max text-gray-400" btn-close type="button" phx-click="tfullscreen">
+                <%= render SnownixWeb.IconsView, "fullscreen-close.svg" , %{} %>
+            </button>
+            <button class="btn h-max text-gray-400">
+                <%= render SnownixWeb.IconsView, "save.svg" , %{} %>
+                    <span><%= gettext("Draft")%></span>
+            </button>
+            <button class="btn h-max">
+                <%= render SnownixWeb.IconsView, "cancel.svg" , %{} %>
+                    <span><%= gettext("Cancel")%></span>
+            </button>
+            <button class="btn h-max primary" type="submit">
+                <span>
+                    <%= render SnownixWeb.IconsView, "send.svg" , %{} %>
+                </span>
+                <%= gettext("Publish")%>
+            </button>
+        </div>
+    </div>
+    <div class="flex flex-col md:flex-row w-ufll md:space-x-4">
+        <div class="flex flex-col space-y-4 w-full">
+            <div>
+                <%= textarea f, :description, class: "py-4 rounded", placeholder: gettext("Short Description") %>
+            </div>
+
+            <div class="flex flex-col w-full prose  max-w-full">
+              <%= inputs_for f, :entities, fn v -> %>
+                <div phx-update="ignore" >
+                    <textarea id={"entity-#{v.id}"} class="py-4 rounded w-full" placeholder={gettext("Short Description")} phx-hook="Markdown"><%= input_value(v, :body) %></textarea>
+                    <%= textarea v, :body , "data-id": "target-entity-#{v.id}", value: input_value(v,:body), class: "hidden"  %>
+                </div>
+                <% end %>
+            </div>
+        </div>
+        <div class="form__sidebar">
+            <.live_component
+                id="poster"
+                uploads={@uploads}
+                module={SnownixWeb.PostLive.Components.UploadComponent} 
+            />
+            
+            <%# Categories %>
+            <div class="input__multiselect">
+                <%= if length(@categories)> 0 do %>
+                    <ul class="items">
+                        <%= for item <- @categories do %>
+                            <li class="item" phx-click="multiselect" phx-value-item={item.id}
+                                phx-value-type="delete" phx-value-list="categories">
+                                <%= item.title %>
+                            </li>
+                        <% end %>
+                    </ul>
+                    <% end %>
+                <div class="input" id="categories" phx-hook="MultiSelect" data-list="categories">
+                    <%= text_input f, :query_categories, placeholder: "Categories" %>
+                    <%= if length(@list_categories)> 0 do %>
+                        <ul class="sugs">
+                            <%= for item <- @list_categories do %>
+                            <li class="item" phx-click="multiselect" phx-value-item={item.id}
+                                    phx-value-type="add" phx-value-list="categories">
+                                    <%= item.title %>
+                            </li>
+                            <% end %>
+                        </ul>
+                    <% end %>
+                </div>
+            </div>
+        </div>
+    </div>
+</.form>

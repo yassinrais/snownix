@@ -123,6 +123,8 @@ defmodule SnownixWeb.LiveHelpers do
   @doc """
   Format naive date
   """
+  def article_date_format(nil), do: nil
+
   def article_date_format(naive_date) do
     naive_date |> DateTime.from_naive!("Etc/UTC") |> Calendar.strftime("%a, %B %d %Y")
   end
@@ -158,7 +160,8 @@ defmodule SnownixWeb.LiveHelpers do
   Assign meta tags
   """
   def put_meta_tags(socket, params \\ %{}) do
-    socket |> assign(params)
+    socket
+    |> assign(params)
   end
 
   @doc """
@@ -168,12 +171,14 @@ defmodule SnownixWeb.LiveHelpers do
     meta_tags =
       @meta_list
       |> Enum.reduce("", fn {name, %{field: field, default: default}}, metas ->
-        if is_nil(assigns[field]) && is_nil(default),
-          do: metas,
-          else: ~H"""
+        if is_nil(assigns[field]) && is_nil(default) do
+          metas
+        else
+          ~H"""
           <%= metas %>
-          <meta name={name} content={assigns[field] || default}>
+          <%= generate_meta_tag(name, assigns[field] || default) %>
           """
+        end
       end)
 
     if assigns[:page_image] do
@@ -184,5 +189,11 @@ defmodule SnownixWeb.LiveHelpers do
     else
       meta_tags
     end
+  end
+
+  def generate_meta_tag(name, content, assigns \\ %{}) do
+    ~H"""
+      <meta name={name} content={content}>
+    """
   end
 end

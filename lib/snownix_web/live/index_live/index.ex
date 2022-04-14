@@ -7,6 +7,7 @@ defmodule SnownixWeb.IndexLive.Index do
     {:ok,
      socket
      |> assign(:page_title, gettext("Home"))
+     |> assign_meta_tags()
      |> assign_posts()}
   end
 
@@ -16,5 +17,14 @@ defmodule SnownixWeb.IndexLive.Index do
       :posts,
       Posts.last_posts()
     )
+  end
+
+  defp assign_meta_tags(socket) do
+    socket
+    |> put_meta_tags(%{
+      page_title: gettext("Home"),
+      page_desc: gettext("A Next-level blog application for futuristic people"),
+      page_keywords: "blog,articles,posts,snownix,phoenix,self hosted,open source"
+    })
   end
 end

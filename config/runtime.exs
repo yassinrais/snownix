@@ -12,6 +12,38 @@ if System.get_env("PHX_SERVER") && System.get_env("RELEASE_NAME") do
   config :snownix, SnownixWeb.Endpoint, server: true
 end
 
+# Storage
+if System.get_env("AWS_STORAGE_S3") do
+  # Use S3
+
+  config :waffle,
+    storage: Waffle.Storage.S3,
+    bucket: System.get_env("AWS_S3_BUCKET", "snownix"),
+    asset_host: System.get_env("AWS_ASSET_HOST")
+
+  config :ex_aws,
+    json_codec: Jason,
+    access_key_id: [System.get_env("AWS_ACCESS_KEY_ID"), :instance_role],
+    secret_access_key: [System.get_env("AWS_SECRET_ACCESS_KEY"), :instance_role],
+    enable: System.get_env("AWS_STORAGE_S3")
+
+  if System.get_env("AWS_CUSTOM_S3") do
+    config :ex_aws,
+      s3: [
+        port: System.get_env("AWS_PORT", "9000") |> String.to_integer(),
+        host: System.get_env("AWS_HOST", "localhost"),
+        scheme: System.get_env("AWS_SCHEME", "http://"),
+        region: System.get_env("AWS_REGION", "us-east-1")
+      ]
+  end
+else
+  # Default local storage
+  config :waffle,
+    storage: Waffle.Storage.Local,
+    storage_dir_prefix: "priv/static",
+    asset_host: {:system, "ASSET_HOST"}
+end
+
 if config_env() == :prod do
   database_url =
     System.get_env("DATABASE_URL") ||

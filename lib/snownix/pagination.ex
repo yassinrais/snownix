@@ -29,7 +29,7 @@ defmodule Snownix.Pagination do
       prev_page: page - 1,
       page: page,
       next_page: page + 1,
-      total: total,
+      total: Float.ceil(total / per_page, 0) |> trunc,
       first: (page - 1) * per_page + 1,
       last: Enum.min([page * per_page, total]),
       items: Enum.slice(results, 0, per_page)

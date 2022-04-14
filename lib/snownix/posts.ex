@@ -4,9 +4,11 @@ defmodule Snownix.Posts do
   """
 
   import Ecto.Query, warn: false
+
   alias Snownix.Repo
 
   alias Snownix.Posts.Post
+  alias Snownix.Posts.Entity
 
   @doc """
   Returns the list of posts.
@@ -34,9 +36,15 @@ defmodule Snownix.Posts do
 
   defp posts(query) do
     query
+    |> order_posts()
     |> Repo.all()
     |> Repo.preload(:author)
     |> Repo.preload(:categories)
+  end
+
+  def order_posts(query) do
+    query
+    |> order_by(desc: :inserted_at)
   end
 
   @doc """
@@ -77,6 +85,7 @@ defmodule Snownix.Posts do
   def create_post(attrs \\ %{}) do
     %Post{}
     |> Post.changeset(attrs)
+    |> Post.read_time_changeset()
     |> Repo.insert()
   end
 
@@ -94,8 +103,31 @@ defmodule Snownix.Posts do
   """
   def update_post(%Post{} = post, attrs) do
     post
+    |> Repo.preload(:entities)
     |> Post.changeset(attrs)
+    |> Post.read_time_changeset()
     |> Repo.update()
+  end
+
+  @doc """
+  Updates the post poster.
+
+  The post poster is updated .
+  The old poster is deleted
+  The confirmed_at date is also updated to the current time.
+  """
+  def update_post_poster(post, poster) do
+    changeset =
+      post
+      |> Post.poster_changeset(%{poster: poster})
+
+    Ecto.Multi.new()
+    |> Ecto.Multi.update(:post, changeset)
+    |> Repo.transaction()
+    |> case do
+      {:ok, %{post: post}} -> {:ok, post}
+      {:error, :post, changeset, _} -> {:error, changeset}
+    end
   end
 
   @doc """
@@ -127,6 +159,10 @@ defmodule Snownix.Posts do
     Post.changeset(post, attrs)
   end
 
+  def change_entity(%Entity{} = entity, attrs \\ %{}) do
+    Entity.changeset(entity, attrs)
+  end
+
   alias Snownix.Posts.Category
 
   @doc """
@@ -138,8 +174,22 @@ defmodule Snownix.Posts do
       [%Category{}, ...]
 
   """
-  def list_categories do
-    Repo.all(Category)
+
+  def list_categories(), do: list_categories(Category)
+  def list_categories(nil), do: list_categories(Category)
+
+  def list_categories(search) when is_binary(search) do
+    search = "#{search}%"
+
+    query =
+      from c in Category,
+        where: like(c.title, ^search)
+
+    list_categories(query)
+  end
+
+  def list_categories(query) do
+    Repo.all(query)
   end
 
   @doc """

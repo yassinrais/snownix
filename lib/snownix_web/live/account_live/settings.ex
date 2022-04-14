@@ -58,7 +58,13 @@ defmodule SnownixWeb.AccountLive.Settings do
   def handle_event("validate", _, socket), do: {:noreply, socket}
 
   def handle_event("delete-avatar", _, socket) do
-    case Accounts.update_user_avatar(socket.assigns.current_user, nil) do
+    current_user = socket.assigns.current_user
+
+    if !is_nil(current_user.avatar) do
+      Snownix.Uploaders.AvatarUploader.delete({current_user.avatar, current_user})
+    end
+
+    case Accounts.update_user_avatar(current_user, nil) do
       {:ok, user} ->
         {:noreply, socket |> assign(:current_user, user)}
 
@@ -71,27 +77,18 @@ defmodule SnownixWeb.AccountLive.Settings do
     if entry.done? do
       current_user = socket.assigns.current_user
 
-      uploaded_files =
-        consume_uploaded_entries(socket, :avatar, fn %{path: path}, entry ->
-          filename = "#{current_user.id}#{Path.extname(entry.client_name)}"
-          dest = "/uploads/avatars/#{filename}"
-          # , Routes.static_path(socket, dest)
-          {:ok, Avatar.upload_avatar(filename, path, dest)}
-        end)
+      consume_uploaded_entries(socket, :avatar, fn meta, entry ->
+        {:ok, user} =
+          Accounts.update_user_avatar(current_user, %Plug.Upload{
+            content_type: entry.client_type,
+            filename: entry.client_name,
+            path: meta.path
+          })
 
-      avatar = uploaded_files |> List.first()
+        {:ok, Snownix.Uploaders.AvatarUploader.url({user.avatar, user}, :original)}
+      end)
 
-      if !is_nil(avatar) do
-        case Accounts.update_user_avatar(current_user, avatar) do
-          {:ok, user} ->
-            {:noreply, socket |> assign(:current_user, user)}
-
-          _ ->
-            {:noreply, socket}
-        end
-      else
-        {:noreply, socket}
-      end
+      {:noreply, socket}
     else
       {:noreply, socket}
     end

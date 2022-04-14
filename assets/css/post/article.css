@@ -1,68 +1,71 @@
 article.post {
-    @apply flex  justify-between;
+  @apply flex  justify-between p-2;
 }
 
-article.post.grid{
-    @apply flex-col;
+article.post.grid {
+  @apply flex-col;
 }
 
 article.post.list {
-    @apply flex-col md:flex-row md:space-x-4 rounded-md;
+  @apply flex-col md:flex-row md:space-x-4 rounded-md;
 }
 
 article.list {
-    @apply w-full rounded-md shadow-sm;
+  @apply w-full rounded-md shadow-sm;
 }
-article.list .poster{
-    @apply md:h-64 rounded-b-none md:rounded-b-md md:rounded-r-none;
+article.list .poster {
+  @apply md:h-64 rounded-b-none md:rounded-b-md md:rounded-r-none;
 }
 
-article h2{
-    @apply mt-3 text-lg font-semibold text-gray-900;
+article h2 {
+  @apply mt-3 text-lg font-semibold text-gray-900;
 }
 
 article.list h2 {
-    @apply mt-0 md:text-2xl;
+  @apply mt-0 md:text-2xl;
 }
 
-article.list .meta{
-    @apply flex flex-col h-full py-2 md:w-2/3;
-    @apply p-4;
+article.list .meta {
+  @apply flex flex-col h-full py-2 md:w-2/3;
+  @apply p-4;
 }
 
 .post__desc {
-    @apply text-sm mb-4 font-normal text-gray-500;
+  @apply text-sm mb-4 font-normal text-gray-500;
 }
 
 article.list .post__desc {
-    @apply md:text-lg;
+  @apply md:text-lg;
 }
 
-
 article .post__author {
-    @apply flex items-center space-x-4 text-sm font-normal text-gray-500;
+  @apply flex items-center space-x-4 text-sm font-normal text-gray-500 justify-between;
 }
 
 article.list .post__author {
-    @apply mt-auto;
+  @apply mt-auto;
 }
 
-article .post__author a{
-    @apply flex items-center space-x-2 font-medium text-gray-900 hover:text-purple-700;
+article .post__author a {
+  @apply flex items-center space-x-2 font-medium text-gray-900 hover:text-purple-700;
 }
 
-article .post__poster{
-    @apply relative;
+article .post__poster {
+  @apply relative;
 }
 
 article .post__categories {
-    @apply  space-x-2 mt-4;
+  @apply space-x-2 mt-4;
 }
 
 article .post__category {
-    @apply px-2 py-1 rounded-full bg-dark text-xs  text-light bg-opacity-30;
+  @apply px-2 py-1 rounded-full bg-dark text-xs  text-light bg-opacity-80;
 }
 
 article .post__image {
-    @apply object-cover w-full h-56 bg-center rounded-md;
+  @apply object-cover w-full h-56 bg-center rounded-md;
+}
+
+article .avatar {
+  @apply rounded-full;
 }

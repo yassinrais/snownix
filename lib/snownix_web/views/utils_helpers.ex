@@ -7,12 +7,17 @@ defmodule SnownixWeb.UtilsHelpers do
     if is_nil(user) or is_nil(user.avatar) do
       "/images/snownix-small.png"
     else
-      user.avatar <>
-        "?u=" <>
-        (user.updated_at
-         |> DateTime.from_naive!("Etc/UTC")
-         |> DateTime.to_unix()
-         |> Integer.to_string())
+      Snownix.Uploaders.AvatarUploader.url({user.avatar, user}, :thumb)
+    end
+  end
+
+  def get_post_poster(post, size \\ :thumb) do
+    case post do
+      %{poster: poster} ->
+        Snownix.Uploaders.PosterUploader.url({poster, post}, size)
+
+      _ ->
+        nil
     end
   end
 end

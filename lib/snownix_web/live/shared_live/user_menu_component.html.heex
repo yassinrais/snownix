@@ -1,8 +1,12 @@
+<div class="flex items-center">
+<div>
+    <%= live_redirect gettext("New Post"), to: Routes.post_new_path(@socket, :new), class: "btn primary"%>
+</div>
 <div data-menu>
     <button 
-        class=" light space-x-2" type="button">
+        class="light space-x-2" type="button">
         <span><%= @current_user.fullname %></span>
-        <img class="w-10 h-10 avatar" src={get_user_avatar(@current_user)}>
+        <img class="w-10 h-10 avatar shadow-sm" src={get_user_avatar(@current_user)}>
     </button>
 
     <!-- Dropdown menu -->
@@ -23,4 +27,5 @@
             method: :delete %>
         </div>
     </div>
+</div>
 </div>

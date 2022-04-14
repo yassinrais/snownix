@@ -1,0 +1,84 @@
+.post__form.full__screen {
+  @apply z-50 w-full h-full absolute inset-0 bg-white p-2 md:px-20 md:py-6;
+}
+.post__form {
+  @apply flex flex-col;
+}
+
+.post__form [btn-close],
+.post__form.full__screen [btn-open] {
+  @apply hidden;
+}
+
+.post__form [btn-open],
+.post__form.full__screen [btn-close] {
+  @apply block;
+}
+
+.post__form .form__header {
+  @apply flex flex-col space-y-2 md:flex-row md:space-y-0 justify-between w-full  border-b border-gray-100;
+  @apply mb-8;
+}
+
+.post__form input,
+.post__form textarea,
+.post__form .input__multiselect {
+  @apply !bg-white;
+}
+
+.post__form #poster {
+  @apply w-full;
+}
+
+.post__form .form__sidebar {
+  @apply flex flex-col space-y-4 w-full max-w-xs;
+}
+
+.input__multiselect {
+  @apply flex px-2 py-2;
+}
+
+.input__multiselect ul.items {
+  @apply flex flex-wrap items-center;
+}
+
+.input__multiselect ul.items li {
+  @apply flex space-y-2 px-2 py-1 m-1 border rounded-md select-none cursor-pointer break-all;
+}
+.input__multiselect .input {
+  @apply flex flex-grow;
+}
+
+.input__multiselect .input input {
+  @apply rounded-none py-1.5 border-none focus:outline-none;
+}
+
+.input__multiselect ul.items li::after {
+  content: "x";
+  @apply mx-1 h-full;
+}
+
+.input__multiselect .input {
+  @apply relative;
+}
+.input__multiselect .sugs {
+  @apply absolute z-20 top-8 left-0;
+  @apply max-h-32 w-full overflow-y-auto bg-gray-50 border border-gray-200 p-2;
+
+  transform: scaleY(0);
+  transition-timing-function: cubic-bezier(0.4, 0, 1, 1);
+  transition-duration: 25ms;
+}
+
+.input__multiselect .sugs li {
+  @apply cursor-pointer hover:text-primary;
+}
+
+.input__multiselect *:focus-within > .sugs,
+.input__multiselect .sugs:hover {
+  @apply opacity-100;
+
+  transform: scaleY(1);
+  transition-timing-function: cubic-bezier(0, 0, 0.2, 1);
+  transition-duration: 100ms;
+}

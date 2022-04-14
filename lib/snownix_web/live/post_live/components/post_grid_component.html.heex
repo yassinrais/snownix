@@ -1,16 +1,7 @@
 <article class="post grid">
     <div class="post__poster">
         <%= live_redirect to: Routes.post_read_path(@socket, :read, @post.slug) do %>
-            <img async="on" src={@post.poster} class="post__image" alt={@post.title} loading="lazy" />
-        <% end %>
-        <%= if length(@post.categories) do %>
-            <div class="post__categories">
-            <%= for category <- @post.categories do %>
-                <span class="post__category">
-                    <%= category.title %>
-                </span>
-            <% end %>
-            </div>
+            <img async="on" src={get_post_poster(@post, :thumb)} class="post__image" alt={@post.title} loading="lazy" />
         <% end %>
     </div>
     <div>
@@ -30,5 +21,15 @@
             <time datetime={@post.published_at}><%= article_date_format(@post.published_at) %></time>
             <span><%= @post.read_time %> min. read</span>
         </p>
+        
+        <%= if length(@post.categories) do %>
+            <div class="post__categories">
+            <%= for category <- @post.categories do %>
+                <a class="post__category">
+                    <%= category.title %>
+                </a>
+            <% end %>
+            </div>
+        <% end %>
     </div>
 </article>

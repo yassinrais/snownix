@@ -37,10 +37,12 @@ defmodule SnownixWeb.Router do
         live "/confirm/:token", AuthLive.Confirm, :confirm
       end
 
-      scope "/account" do
+      scope "/" do
         pipe_through [:require_authenticated_user]
 
-        live "/settings", AccountLive.Settings, :settings
+        live "/account/settings", AccountLive.Settings, :settings
+
+        live "/new-post", PostLive.New, :new
       end
 
       scope "/admin" do

@@ -6,6 +6,8 @@
     <% end %>
   </div>
 
+
+  <%= if !(@pagination.page <= 1 && !@pagination.has_next) do %>
   <div class="flex flex-col items-center justify-center mt-20 space-x-0 space-y-2 md:space-x-2 md:space-y-0 md:flex-row">
     <button 
     disabled={!@pagination.has_prev} 
@@ -15,6 +17,10 @@
         Prev Page
     </button>
     
+    <div class="flex space-x-2">
+      <button class="btn" disabled><%= @pagination.page %>/<%= @pagination.total %></button>
+    </div>
+
     <button 
     disabled={!@pagination.has_next} 
     phx-value-page={@pagination.next_page}
@@ -23,4 +29,5 @@
         Next Page
     </button>
   </div>
+  <% end %>
 </section>

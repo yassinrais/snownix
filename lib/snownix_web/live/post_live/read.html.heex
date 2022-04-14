@@ -2,8 +2,8 @@
   <%# Hero %>
   <div class="md:mx-auto sm:text-center lg:max-w-4xl space-y-6 md:space-y-12">
     <h2
-      class=" font-sans text-3xl font-bold leading-none tracking-tight text-gray-900 sm:text-4xl md:mx-auto">
-      <span class="relative inline-block">
+      class=" font-sans text-xl md:text-3xl font-bold leading-none tracking-tight text-gray-900 sm:text-4xl md:mx-auto">
+      <span class="hidden relative md:inline-block">
         <svg viewBox="0 0 52 24" fill="currentColor"
           class="absolute top-0 left-0 z-0 hidden w-32 -mt-8 -ml-20 text-blue-gray-100 lg:w-32 lg:-ml-28 lg:-mt-10 sm:block">
           <defs>
@@ -13,7 +13,6 @@
           </defs>
           <rect fill="url(#679d5905-e08c-4b91-a66c-84aefbb9d2f5)" width="52" height="24"></rect>
         </svg>
-        <span class="relative">The</span>
       </span>
       <%= @post.title %>
     </h2>
@@ -25,7 +24,7 @@
   <div class="flex flex-col items-center mx-auto space-y-14 lg:max-w-4xl">
     <%= if @post.poster do %>
       <div class="w-full transition-shadow duration-300 hover:shadow-xl">
-        <img class="object-cover w-full h-56 rounded-xl shadow-sm sm:h-64 md:h-80 lg:h-96" src={@post.poster} alt={@post.title} />
+        <img class=" object-fill w-full h-56 rounded-xl shadow-sm sm:h-64 md:h-80 lg:h-auto" src={get_post_poster(@post, :original)} alt={@post.title} />
       </div>
     <% end %>
   <%# Author & Info %>
@@ -54,7 +53,7 @@
     </div>
   </div>
   <%# Entities %>
-  <div class="flex flex-col md:mx-auto space-y-8 lg:max-w-4xl">
+  <div class="flex flex-col md:mx-auto  prose space-y-8 lg:max-w-4xl">
     <%= for entity <- @post.entities do %>
       <.live_component 
         id={entity.id}

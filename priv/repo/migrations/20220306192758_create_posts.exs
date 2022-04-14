@@ -9,6 +9,7 @@ defmodule Snownix.Repo.Migrations.CreatePosts do
       add :title, :text
       add :poster, :text
       add :description, :text
+      add :draft, :boolean
       add :read_time, :integer, default: 0
 
       add :published_at, :naive_datetime

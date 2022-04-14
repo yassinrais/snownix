@@ -1,0 +1,39 @@
+<div class="flex flex-col">
+
+    <%= for err <- upload_errors(@uploads.images) do %>
+        <p class="alert alert-danger mb-2"><%= error_to_string(err) %></p>
+    <% end %>
+
+    <div phx-drop-target={@uploads.images.ref} class="border-2 border-dashed border-dark border-opacity-20 hover:border-primary">
+        <label class="img__upload cursor-pointer w-full h-48 flex flex-col items-center justify-center relative  text-gray-600 hover:text-primary">
+            <div class="absolute inset-0 w-full h-full">
+                <%= for entry <- @uploads.images.entries do %>
+                    <%= live_img_preview entry, class: "object-cover w-full h-full" %>
+                <% end %>
+            </div>
+            <span>
+                <%= render SnownixWeb.IconsView, "upload.svg" , %{} %>
+            </span>
+            <%= live_file_input @uploads.images, class: "hidden" %>
+            <span>Poster</span>
+        </label>
+
+        <%= for entry <- @uploads.images.entries do %>
+            <article class="upload__entry w-full p-2 ">
+                <figure class="max-w-full">
+                    <figcaption><%= entry.client_name %></figcaption>
+                </figure>
+                <div class="flex space-x-2">
+                    <div class="w-full h-6 bg-primary bg-opacity-20 rounded-lg">
+                        <div class="h-6 bg-primary bg-opacity-100 rounded-lg" style={"width: #{entry.progress}%"}></div>
+                    </div>
+                    <button class="!w-6 !h-6 btn primary" phx-click="cancel-upload" phx-value-ref={entry.ref} aria-label="cancel">&times;</button>
+                </div>
+                <%# Phoenix.LiveView.Helpers.upload_errors/2 returns a list of error atoms %>
+                <%= for err <- upload_errors(@uploads.images, entry) do %>
+                <p class="alert alert-danger"><%= error_to_string(err) %></p>
+                <% end %>
+            </article>
+        <% end %>
+    </div>
+</div>

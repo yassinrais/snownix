@@ -190,8 +190,6 @@ defmodule Snownix.Accounts do
       user
       |> User.avatar_changeset(%{avatar: avatar})
 
-    Avatar.rm_user_avatar(user.avatar)
-
     Ecto.Multi.new()
     |> Ecto.Multi.update(:user, changeset)
     |> Repo.transaction()

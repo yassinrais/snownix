@@ -1,6 +1,9 @@
 <section class="header relative text-gray-700  body-font">
     <div class="flex flex-col flex-wrap items-center justify-between py-4 mx-auto md:flex-row container">
-        <%= live_redirect "Snownix", to: "/", class: "logo relative z-10" %>
+        <%= live_redirect to: "/", class: "logo relative z-10" do %>
+            Snownix
+            <span class="text-primary">.</span>
+        <% end %>
         <nav class="top-0 left-0 z-0 flex items-center justify-center w-full h-full -ml-0 space-x-5 text-base md:-ml-5 md:absolute py-4 md:py-0">
             <%= for menu <- list_menu() do %>
                 <div data-menu data-hover>

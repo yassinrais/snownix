@@ -1,12 +1,13 @@
 defmodule Snownix.Accounts.User do
   use Ecto.Schema
   import Ecto.Changeset
+  use Waffle.Ecto.Schema
 
   @primary_key {:id, :binary_id, autogenerate: true}
 
   schema "users" do
     field :fullname, :string
-    field :avatar, :string
+    field :avatar, Snownix.Uploaders.AvatarUploader.Type
 
     field :phone, :string
 
@@ -71,7 +72,7 @@ defmodule Snownix.Accounts.User do
 
   def avatar_changeset(user, attrs) do
     user
-    |> cast(attrs, [:avatar])
+    |> cast_attachments(attrs, [:avatar])
   end
 
   defp validate_email(changeset, attrs) do

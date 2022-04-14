@@ -1,4 +1,4 @@
-defmodule SnownixWeb.PostLive.FormComponent do
+defmodule SnownixWeb.PostLive.Components.FormComponent do
   use SnownixWeb, :live_component
 
   alias Snownix.Posts

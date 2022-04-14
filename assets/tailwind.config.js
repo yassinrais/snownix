@@ -17,8 +17,10 @@ module.exports = {
       }
     },
     fontFamily: {
-      primary: ['Inter', 'Raleway', 'sans-serif']
+      primary: ['Inter', 'sans-serif']
     }
   },
-  plugins: []
+  plugins: [
+    require('@tailwindcss/typography'),
+  ]
 }
