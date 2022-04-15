@@ -3,7 +3,9 @@ import Mde from 'easymde';
 const Hooks = {
     Flash: {
         mounted() {
-            setTimeout(() => this.closeFlash(), 3000)
+            this.el.addEventListener('click', () => {
+                this.closeFlash()
+            });
         },
         closeFlash() {
             this.pushEvent("lv:clear-flash")

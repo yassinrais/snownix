@@ -13,6 +13,7 @@ defmodule SnownixWeb.PostLive.New do
      |> assign_uploads()
      |> assign_multiselect()
      |> assign(:markdown, true)
+     |> assign(:custom_slug, false)
      |> assign(:fullscreen, false)}
   end
 
@@ -81,7 +82,7 @@ defmodule SnownixWeb.PostLive.New do
 
     changeset =
       socket.assigns.post
-      |> Posts.change_post(post_params)
+      |> Posts.change_post(post_params, custom_slug: socket.assigns.custom_slug)
       |> Map.put(:action, :validate)
 
     {:noreply,
@@ -90,7 +91,11 @@ defmodule SnownixWeb.PostLive.New do
      |> assign(:changeset, changeset)}
   end
 
-  def handle_event("save", %{"post" => post_params}, socket) do
+  def handle_event(socket, "custom-slug", _) do
+    socket |> assign(:custom_slug, true)
+  end
+
+  def handle_event("create", %{"post" => post_params}, socket) do
     author = socket.assigns.current_user
     categories = socket.assigns.categories
 
@@ -108,7 +113,10 @@ defmodule SnownixWeb.PostLive.New do
         {:noreply, socket}
 
       {:error, %Ecto.Changeset{} = changeset} ->
-        {:noreply, assign(socket, changeset: changeset)}
+        {:noreply,
+         socket
+         |> assign(:changeset, changeset)
+         |> put_changeset_errors(changeset)}
     end
   end
 

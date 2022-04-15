@@ -15,6 +15,20 @@ defmodule SnownixWeb.PostLive.Read do
      |> assign_post(slug)}
   end
 
+  @impl true
+  def handle_event("delete", _, socket) do
+    case Posts.delete_post(socket.assigns.current_user, socket.assigns.post) do
+      {:ok, _} ->
+        {:noreply,
+         socket
+         |> put_flash(:success, gettext("Post deleted successfully."))
+         |> redirect(to: "/")}
+
+      {:error} ->
+        {:noreply, socket |> put_flash(:error, gettext("Only post author can delete this post"))}
+    end
+  end
+
   defp assign_post(socket, slug) do
     post = Posts.get_post_by_slug!(slug)
 

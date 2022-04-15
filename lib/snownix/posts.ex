@@ -155,17 +155,25 @@ defmodule Snownix.Posts do
     Repo.delete(post)
   end
 
+  def delete_post(%User{} = user, %Post{} = post) do
+    if user.id == post.author_id do
+      {:ok, Repo.delete(post)}
+    else
+      {:error}
+    end
+  end
+
   @doc """
   Returns an `%Ecto.Changeset{}` for tracking post changes.
 
   ## Examples
 
-      iex> change_post(post)
+      iex> change_post(post, attrs, opts)
       %Ecto.Changeset{data: %Post{}}
 
   """
-  def change_post(%Post{} = post, attrs \\ %{}) do
-    Post.changeset(post, attrs)
+  def change_post(%Post{} = post, attrs \\ %{}, opts \\ []) do
+    Post.changeset(post, attrs, opts)
   end
 
   def change_entity(%Entity{} = entity, attrs \\ %{}) do

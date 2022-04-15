@@ -1,12 +1,18 @@
-<.form let={f} for={@changeset} phx-submit="save"  class={"post__form" <> (if @fullscreen, do: " full__screen", else: "")} autocomplete="off" phx-change="validate">
-        <.live_component module={SnownixWeb.SharedLive.AlertsComponent} flash={@flash} id="alerts" />
+<.form let={f} for={@changeset} phx-submit="create"  class={"post__form" <> (if @fullscreen, do: " full__screen", else: "")} autocomplete="off" phx-change="validate">
+    <.live_component module={SnownixWeb.SharedLive.AlertsComponent} flash={@flash} id="alerts" />
     <div class="form__header md:space-x-7">
-        <div class={"input__title" <> (if tag_has_error(f,:title), do: " field__error", else: "")}>
+        <div class={"relative input__title" <> (if tag_has_error(f,:title) || tag_has_error(f,:slug), do: " field__error", else: "")}>
             <%= render SnownixWeb.IconsView, "title.svg" , %{} %>
             <div class={"relative w-full"}>
                 <%= text_input f, 
                     :title, 
                     class: "py-4 border-none focus:outline-none text-xl", placeholder: gettext("Title") %>
+            </div>
+            <div class="w-full flex absolute -top-4">
+                <%= Routes.post_read_path(@socket, :read, "") %>
+                <%= text_input f, 
+                    :slug, 
+                    class: "p-0 border-none focus:outline-none", placeholder: gettext("Slug") %>
             </div>
         </div>
         <div class="form__actions">

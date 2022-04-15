@@ -3,7 +3,7 @@ defmodule SnownixWeb.ErrorHelpers do
   Conveniences for translating and building error messages.
   """
 
-  import Phoenix.Controller, only: [put_flash: 3]
+  import Phoenix.LiveView, only: [put_flash: 3]
 
   use Phoenix.HTML
 

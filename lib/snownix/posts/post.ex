@@ -30,8 +30,13 @@ defmodule Snownix.Posts.Post do
   end
 
   @doc false
-  def changeset(post, attrs) do
-    attrs = Map.merge(attrs, generate_slug(attrs))
+  def changeset(post, attrs, opts \\ []) do
+    custom_slug = Keyword.get(opts, :custom_slug, false)
+
+    IO.inspect(custom_slug)
+    # if !custom_slug do
+    #   ^attrs = Map.merge(attrs, generate_slug(attrs))
+    # end
 
     post
     |> cast(attrs, [

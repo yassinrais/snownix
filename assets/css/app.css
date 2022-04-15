@@ -14,9 +14,15 @@ textarea,
 button,
 select,
 .btn {
-  @apply w-full px-4 py-2.5 rounded-md;
+  @apply px-4 py-2.5 rounded-md;
   @apply inline-flex items-center justify-center;
   @apply text-base font-medium leading-6;
+}
+
+input,
+textarea,
+select {
+  @apply w-full;
 }
 
 input,
@@ -89,8 +95,12 @@ select {
 * Alerts
 * ----------------------- */
 .alert {
-  @apply p-4 text-base rounded-lg w-full;
+  @apply p-4 py-3 text-base rounded-lg w-full flex items-center my-5;
 }
+.alert svg {
+  @apply mr-2;
+}
+
 .alerts {
   transition-property: transform;
   transition-duration: 2s;
