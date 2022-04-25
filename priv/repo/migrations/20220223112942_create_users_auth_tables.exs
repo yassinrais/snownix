@@ -7,6 +7,9 @@ defmodule Snownix.Repo.Migrations.CreateUsersAuthTables do
     create table(:users, primary_key: false) do
       add :id, :uuid, primary_key: true
 
+      add :firstname, :citext
+      add :lastname, :citext
+
       add :username, :citext, null: false
       add :email, :citext, null: false
       add :hashed_password, :string, null: false
