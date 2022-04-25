@@ -6,8 +6,7 @@ defmodule Snownix.Accounts.User do
   @primary_key {:id, :binary_id, autogenerate: true}
 
   schema "users" do
-    field :firstname, :string
-    field :lastname, :string
+    field :fullname, :string
     field :avatar, Snownix.Uploaders.AvatarUploader.Type
 
     field :phone, :string
