@@ -1,10 +1,12 @@
-<div class="container py-6 md:pb-14 md:pt-10 mx-auto text-center">
-  <h1 class="flex flex-col space-y-2 text-5xl font-extrabold leading-10 tracking-tight text-gray-900 text-center sm:leading-none md:text-6xl lg:text-7xl">
-    <span class="text-lg lg:text-5xl animate-pulse">The Futuristic Blog</span>
-    <span class="text-transparent bg-clip-text bg-gradient-to-br from-indigo-600 to-blue-500 "> Snownix</span>
-  </h1>
-</div>
 <.live_component module={SnownixWeb.SharedLive.AlertsComponent} flash={@flash} id="index-alerts" />
+<%= if Application.get_env(:snownix, :demo) do %>
+  <div class="container py-6 md:pb-14 md:pt-10 mx-auto text-center">
+    <h1 class="flex flex-col space-y-2 text-5xl font-extrabold leading-10 tracking-tight text-gray-900 text-center sm:leading-none md:text-6xl lg:text-7xl">
+      <span class="text-lg lg:text-5xl animate-pulse">The Futuristic Blog</span>
+      <span class="text-transparent bg-clip-text bg-gradient-to-br from-indigo-600 to-blue-500 "> Snownix</span>
+    </h1>
+  </div>
+<% end %>
 
 <%= if length(@posts) > 0 do %>
 <section class="flex flex-col space-y-10 py-4 max-w-7xl">

@@ -51,7 +51,7 @@ article .post__author a {
 }
 
 article .post__poster {
-  @apply relative;
+  @apply relative bg-gray-100;
 }
 
 article .post__times {

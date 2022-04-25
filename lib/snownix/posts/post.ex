@@ -31,18 +31,14 @@ defmodule Snownix.Posts.Post do
 
   @doc false
   def changeset(post, attrs, opts \\ []) do
-    custom_slug = Keyword.get(opts, :custom_slug, false)
-
-    IO.inspect(custom_slug)
-    # if !custom_slug do
-    #   ^attrs = Map.merge(attrs, generate_slug(attrs))
-    # end
+    attrs = custom_slug(Keyword.get(opts, :custom_slug, false), attrs)
 
     post
     |> cast(attrs, [
       :slug,
       :title,
       :poster,
+      :draft,
       :description,
       :author_id,
       :published_at,
@@ -54,6 +50,12 @@ defmodule Snownix.Posts.Post do
     |> validate_length(:description, min: 10, max: 400)
     |> unique_constraint(:slug)
     |> cast_assoc(:entities, with: &Entity.changeset/2, required: true)
+  end
+
+  def custom_slug(true, attrs), do: attrs
+
+  def custom_slug(false, attrs) do
+    Map.merge(attrs, generate_slug(attrs))
   end
 
   @doc """
@@ -79,7 +81,13 @@ defmodule Snownix.Posts.Post do
 
   def categories_changeset(post, categories) do
     post
-    |> put_assoc(:categories, categories)
+    |> put_assoc(
+      :categories,
+      categories
+      |> Enum.map(fn c ->
+        Snownix.Posts.Category.changeset(c, %{})
+      end)
+    )
   end
 
   defp filter_changeset(changeset) do

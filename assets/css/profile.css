@@ -3,7 +3,7 @@
 }
 
 .profile__header .profile__banner {
-  @apply w-full h-48 bg-primary bg-opacity-50 border-b;
+  @apply w-full h-48 bg-dark bg-opacity-50 border-b;
 }
 
 .profile__header .profile__avatar {

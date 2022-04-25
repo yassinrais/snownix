@@ -27,22 +27,29 @@ const Hooks = {
     },
     MultiSelect: {
         mounted() {
-            const listName = this.el.getAttribute('data-list');
             const input = this.el.querySelector('input');
+            const target = this.el.getAttribute('phx-target');
+            const listName = this.el.getAttribute('data-list');
 
             input.addEventListener('keyup', (event) => {
                 let value = event.target.value;
                 if (event.key === ',') {
                     value.split(',').filter(v => v).forEach(item => {
-                        this.pushEvent('multiselect', {
+                        const data = {
                             list: listName,
                             item: {
                                 id: item,
                                 title: item
                             },
                             type: 'add'
-                        });
+                        };
                         event.target.value = '';
+
+                        if (!target) {
+                            return this.pushEvent('multiselect', data);
+                        }
+
+                        this.pushEventTo(target, 'multiselect', data);
                     });
                 }
             })
@@ -50,6 +57,7 @@ const Hooks = {
     },
     Markdown: {
         mounted() {
+            console.log('loaded!')
             const mde = new Mde({
                 element: this.el,
                 uploadImage: true,

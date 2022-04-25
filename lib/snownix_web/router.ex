@@ -43,6 +43,7 @@ defmodule SnownixWeb.Router do
         live "/account/settings", AccountLive.Settings, :settings
 
         live "/new-post", PostLive.New, :new
+        live "/edit-post/:id", PostLive.Edit, :edit
       end
 
       scope "/admin" do

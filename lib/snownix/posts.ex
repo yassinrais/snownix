@@ -38,6 +38,7 @@ defmodule Snownix.Posts do
 
   defp posts(query) do
     query
+    |> active_posts()
     |> order_posts()
     |> Repo.all()
     |> Repo.preload(:author)
@@ -47,6 +48,11 @@ defmodule Snownix.Posts do
   def order_posts(query) do
     query
     |> order_by(desc: :published_at)
+  end
+
+  def active_posts(query) do
+    query
+    |> where(draft: false)
   end
 
   def by_user(query, username) do
@@ -89,9 +95,9 @@ defmodule Snownix.Posts do
       {:error, %Ecto.Changeset{}}
 
   """
-  def create_post(author, attrs \\ %{}, categories \\ []) do
+  def create_post(author, attrs \\ %{}, categories \\ [], opts \\ []) do
     %Post{}
-    |> Post.changeset(attrs)
+    |> Post.changeset(attrs, opts)
     |> Post.author_changeset(author)
     |> Post.categories_changeset(categories)
     |> Post.read_time_changeset()
@@ -110,10 +116,11 @@ defmodule Snownix.Posts do
       {:error, %Ecto.Changeset{}}
 
   """
-  def update_post(%Post{} = post, attrs) do
+  def update_post(%Post{} = post, attrs \\ %{}, categories \\ [], opts \\ []) do
     post
     |> Repo.preload(:entities)
-    |> Post.changeset(attrs)
+    |> Post.changeset(attrs, opts)
+    |> Post.categories_changeset(categories)
     |> Post.read_time_changeset()
     |> Repo.update()
   end

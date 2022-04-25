@@ -1,37 +1,108 @@
-<div>
-  <h2><%= @title %></h2>
+<section>
+    <.form 
+        let={f} 
+        for={@changeset} 
+        class={"post__form" <> (if @fullscreen, do: " full__screen", else: "")} 
+        autocomplete="off" 
+        phx-target={@myself}
+        phx-submit="save"  
+        phx-change="validate"
+        >
+        <.live_component module={SnownixWeb.SharedLive.AlertsComponent} flash={@flash} id="alerts" />
+        <div class="form__header md:space-x-7">
+            <div class={"relative input__title" <> (if tag_has_error(f,:title) || tag_has_error(f,:slug), do: " field__error", else: "")}>
+                <%= render SnownixWeb.IconsView, "title.svg" , %{} %>
+                <div class={"relative w-full"}>
+                    <%= text_input f, 
+                        :title, 
+                        class: "py-4 border-none focus:outline-none text-xl", placeholder: gettext("Title") %>
+                </div>
+                <div class="w-full flex absolute -top-4">
+                    <%= Routes.post_read_path(@socket, :read, "") %>
+                    <%= text_input f, 
+                        :slug,
+                        "phx-focus": "custom-slug",
+                        "phx-target": @myself,
+                        class: "p-0 border-none focus:outline-none", placeholder: gettext("Slug") %>
+                </div>
+            </div>
+            <div class="form__actions">
+                <button class="btn icon !w-auto h-max text-gray-400" btn-open type="button" phx-click="tfullscreen">
+                    <%= render SnownixWeb.IconsView, "fullscreen-open.svg" , %{} %>
+                </button>
+                
+                <%= live_redirect to: "./", class: "btn h-max" do %> 
+                    <%= render SnownixWeb.IconsView, "cancel.svg" , %{} %>
+                        <span><%= gettext("Cancel")%></span>
+                <% end %>
+                <button class="btn icon !w-auto h-max text-gray-400" btn-close type="button" phx-click="tfullscreen">
+                    <%= render SnownixWeb.IconsView, "fullscreen-close.svg" , %{} %>
+                </button>
+                <button type="button" phx-click="draft" class={"btn h-max " <> (if @draft, do: "text-primary" , else: "text-gray-400") }>
+                    <%= render SnownixWeb.IconsView, "save.svg" , %{} %>
+                        <span><%= gettext("Draft")%></span>
+                </button>
+                <button class="btn h-max primary" type="submit">
+                    <span>
+                        <%= render SnownixWeb.IconsView, "send.svg" , %{} %>
+                    </span>
+                    <%= if @draft,do: gettext("Save"), else: gettext("Publish") %>
+                </button>
+            </div>
+        </div>
+        <div class="flex flex-col md:flex-row w-ufll md:space-x-4">
+            <div class="flex flex-col space-y-4 w-full">
+                <div class={if tag_has_error(f,:description), do: " field__error", else: ""}>
+                    <%= textarea f, :description, class: "py-4 rounded", placeholder: gettext("Short Description") %>
+                    <%= error_tag f, :description %>
+                </div>
 
-  <.form
-    let={f}
-    for={@changeset}
-    id="post-form"
-    phx-target={@myself}
-    phx-change="validate"
-    phx-submit="save">
-  
-    <%= label f, :slug %>
-    <%= text_input f, :slug %>
-    <%= error_tag f, :slug %>
-  
-    <%= label f, :title %>
-    <%= textarea f, :title %>
-    <%= error_tag f, :title %>
-  
-    <%= label f, :description %>
-    <%= textarea f, :description %>
-    <%= error_tag f, :description %>
-  
-    <%= label f, :published_at %>
-    <%= datetime_select f, :published_at %>
-    <%= error_tag f, :published_at %>
-  
-    <div>
-      <%= label f, :author_id %>
-      <%= select f, :author_id, Snownix.Accounts.list_users() |> Enum.reduce([nil: nil], fn m, ac -> ac ++ [{m.email, m.id}] end) %>
-      <%= error_tag f, :author_id%>
-    </div>
-    <div>
-      <%= submit "Save", phx_disable_with: "Saving..." %>
-    </div>
-  </.form>
-</div>
+                <div class="flex flex-col w-full prose  max-w-full">
+                    <%= inputs_for f, :entities, fn v -> %>
+                    <div class={(if tag_has_error(v,:body), do: " field__error", else: "")}>
+                        <div phx-update="ignore">
+                            <textarea id={"entity-#{v.id}"} class="py-4 rounded w-full" placeholder={gettext("Short Description")} phx-hook="Markdown"><%= input_value(v, :body) %></textarea>
+                            <%= textarea v, :body , "data-id": "target-entity-#{v.id}", value: input_value(v,:body), class: "hidden"  %>
+                        </div>
+                        <%= error_tag v, :body %>
+                    </div>
+                    <% end %>
+                </div>
+            </div>
+            <div class="form__sidebar">
+                <.live_component
+                    id="poster"
+                    uploads={@uploads}
+                    module={SnownixWeb.PostLive.Components.UploadComponent} 
+                />
+                
+                <%# Categories %>
+                <div class="input__multiselect">
+                    <%= if length(@categories)> 0 do %>
+                        <ul class="items">
+                            <%= for item <- @categories do %>
+                                <li class="item" phx-click="multiselect" phx-target={@myself} phx-value-item={item.id}
+                                    phx-value-type="delete" phx-value-list="categories">
+                                    <%= item.title %>
+                                </li>
+                            <% end %>
+                        </ul>
+                        <% end %>
+                    <div class="input" id="categories" phx-hook="MultiSelect" phx-target={@myself} data-list="categories">
+                        <%= text_input f, :query_categories, placeholder: "Categories" %>
+                        <%= if length(@list_categories)> 0 do %>
+                            <ul class="sugs">
+                                <%= for item <- @list_categories do %>
+                                <li class="item" phx-click="multiselect" phx-target={@myself} phx-value-item={item.id}
+                                        phx-value-type="add" phx-value-list="categories">
+                                        <%= item.title %>
+                                </li>
+                                <% end %>
+                            </ul>
+                        <% end %>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </.form>
+</section>

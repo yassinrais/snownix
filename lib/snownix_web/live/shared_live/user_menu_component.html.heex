@@ -17,6 +17,10 @@
         </div>
         <ul class="py-1" >
             <li>
+                <%= live_redirect gettext("Profile"), to: Routes.account_profile_path(SnownixWeb.Endpoint, :index, @current_user.username), 
+                class: "block py-2 px-4 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white" %>
+            </li>
+            <li>
                 <%= live_redirect gettext("Settings"), to: Routes.account_settings_path(SnownixWeb.Endpoint, :settings), 
                 class: "block py-2 px-4 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white" %>
             </li>

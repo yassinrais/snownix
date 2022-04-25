@@ -62,12 +62,17 @@
         </div>
       <%= if @post.author_id == @current_user.id do %>
         <div>·</div>
-        <button data-menu data-hover class="hover:text-primary">
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+        <button data-menu data-hover >
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 hover:text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
             <path stroke-linecap="round" stroke-linejoin="round" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z" />
           </svg>
-          <ul data-menu-dropdown class="w-max px-2 list-none bg-white shadow left-6 top-6">
-            <li class="p-3" phx-click="delete">
+          <ul data-menu-dropdown class=" px-2 list-none bg-white shadow left-6 top-6">
+            <li class="p-3 hover:text-primary" >
+              <%= live_redirect to: Routes.post_edit_path(@socket, :edit, @post.id) do %>
+                Edit
+              <% end %>
+            </li>
+            <li class="p-3 hover:text-primary" phx-click="delete">
               Delete
             </li>
           </ul>

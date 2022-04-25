@@ -158,7 +158,7 @@ main.container {
   @apply relative;
 }
 *[data-menu-dropdown] {
-  @apply absolute opacity-0;
+  @apply flex flex-col w-min  items-start absolute opacity-0;
   transform: scaleX(0) scaleY(0);
   transition-timing-function: cubic-bezier(0.4, 0, 1, 1);
   transition-duration: 75ms;
