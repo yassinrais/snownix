@@ -14,7 +14,7 @@ defmodule SnownixWeb.PostLive.New do
         action={:new}
         post={@post}
         return_to="/"
-
+        current_user={@current_user}
       />
      </section>
     """
