@@ -119,8 +119,11 @@ defmodule SnownixWeb.PostLive.Components.FormComponent do
          |> push_redirect(to: socket.assigns.return_to)}
 
       {:error, %Ecto.Changeset{} = changeset} ->
+        IO.inspect(changeset)
+
         {:noreply,
          socket
+         |> put_flash(:info, "Error !")
          |> assign(:changeset, changeset)
          |> put_changeset_errors(changeset)}
     end

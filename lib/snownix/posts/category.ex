@@ -6,10 +6,10 @@ defmodule Snownix.Posts.Category do
   @primary_key {:id, :binary_id, autogenerate: true}
 
   schema "categories" do
-    field :description, :string
     field :slug, :string
-    field :status, :string
     field :title, :string
+    field :description, :string
+    field :status, :string, default: "active"
 
     field :parent_id, :binary_id
 
@@ -23,6 +23,6 @@ defmodule Snownix.Posts.Category do
     category
     |> cast(attrs, [:slug, :title, :description, :status])
     |> unique_constraint(:slug)
-    |> validate_required([:slug, :title, :description, :status])
+    |> validate_required([:slug, :title, :status])
   end
 end

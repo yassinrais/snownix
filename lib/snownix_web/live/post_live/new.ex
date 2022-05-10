@@ -10,11 +10,11 @@ defmodule SnownixWeb.PostLive.New do
       <.live_component
         id={@id}
         module={SnownixWeb.PostLive.Components.FormComponent}
-        title="New Post"
         action={:new}
+        title="New Post"
         post={@post}
-        return_to="/"
         current_user={@current_user}
+        return_to="/"
       />
      </section>
     """

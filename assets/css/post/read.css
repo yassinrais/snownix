@@ -1,0 +1,3 @@
+.post__read  *{
+  @apply break-words;
+}
