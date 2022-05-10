@@ -2,6 +2,7 @@ defmodule SnownixWeb.PostLive.New do
   use SnownixWeb, :live_view
 
   alias Snownix.Posts.Post
+  alias Snownix.Posts.Entity
 
   def render(assigns) do
     ~H"""
@@ -23,7 +24,9 @@ defmodule SnownixWeb.PostLive.New do
     {:ok,
      socket
      |> assign(:id, "new")
-     |> assign(:post, %Post{})
+     |> assign(:post, %Post{
+       entities: [%Entity{}]
+     })
      |> assign(:markdown, true)
      |> assign(:custom_slug, false)
      |> assign(:fullscreen, false)}

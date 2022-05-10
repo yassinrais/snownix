@@ -32,7 +32,7 @@ defmodule Snownix.Seeds do
         fullname: "Jone Doe",
         phone: "+212612345678",
         email: "jone@snownix.io",
-        hashed_password: "jonepassword",
+        hashed_password: Bcrypt.hash_pwd_salt("jone@snownix.io"),
         confirmed_at: get_naive_datetime(),
         inserted_at: get_naive_datetime(),
         updated_at: get_naive_datetime(1_000_000),
