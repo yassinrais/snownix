@@ -16,7 +16,7 @@
             </div>
             <div class="relative">
                 <%= label f, :password, gettext("Password") , class: "font-medium text-gray-900" %>
-                <%= password_input f, :password, placeholder: gettext("Password"), required: true, value: input_value(f, :password), phx_throttle: 1000 %>
+                <%= password_input f, :password, placeholder: gettext("Password"), required: true, value: input_value(f, :password), phx_debounce: 1000 %>
                 <%= error_tag f, :password %>
             </div>
             <div class="flex flex-col md:flex-row justify-between space-y-2 md:space-y-0">
@@ -29,8 +29,23 @@
             <%= live_patch gettext("Forgot password?") , to: Routes.auth_forgot_password_path(@socket, :forgot), class: "text-sm" %>
             </div>
             <div>
-              <button type="submit" class="btn primary" disabled={length(f.errors) > 0}><%= gettext("Login") %></button>
+              <button type="submit" class="btn primary w-full" disabled={length(f.errors) > 0}><%= gettext("Login") %></button>
             </div>
         </.form>
+        
+        <div class="w-full py-10 flex flex-col space-y-3">
+            <%= if Github.enabled? do %>
+                <a href={Github.authorize_link(:login)} class="w-full border-2 hover:border-gray-600 rounded-md py-3 flex justify-center items-center hover:!no-underline transition-all">
+                    <img class="w-7 h-7 mr-3" src={Routes.static_path(@socket, "/images/github.svg")} alt="" />
+                    <span class="text-gray-800 font-medium">Sign in with Github</span>
+                </a>
+            <% end %>
+
+            <a href="#" class="w-full border-2 hover:border-gray-600 rounded-md py-3 flex justify-center items-center hover:!no-underline transition-all">
+                <img class="w-7 h-7 mr-3" src={Routes.static_path(@socket, "/images/google.svg")} alt="" />
+                <span class="text-gray-800 font-medium">Sign in with Google</span>
+            </a>
+        </div>
+
     </div>
 </section>

@@ -2,6 +2,7 @@ defmodule SnownixWeb.AuthLive.Register do
   use SnownixWeb, :live_view
 
   alias Snownix.Accounts
+  alias Snownix.Providers.Github
 
   def mount(_, _, socket) do
     {:ok,

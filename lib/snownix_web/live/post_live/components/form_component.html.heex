@@ -5,17 +5,17 @@
         class={"post__form" <> (if @fullscreen, do: " full__screen", else: "")} 
         autocomplete="off" 
         phx-target={@myself}
-        phx-submit="save"  
+        phx-submit="save"
         phx-change="validate"
         >
         <.live_component module={SnownixWeb.SharedLive.AlertsComponent} flash={@flash} id="alerts" />
         <div class="form__header md:space-x-7">
-            <div class={"relative input__title" <> (if tag_has_error(f,:title) || tag_has_error(f,:slug), do: " field__error", else: "")}>
+            <div  class={"relative input__title" <> (if tag_has_error(f,:title) || tag_has_error(f,:slug), do: " field__error", else: "")}>
                 <%= render SnownixWeb.IconsView, "title.svg" , %{} %>
                 <div class={"relative w-full"}>
                     <%= text_input f, 
-                        :title, 
-                        class: "py-4 border-none focus:outline-none text-xl", placeholder: gettext("Title") %>
+                        :title,
+                        class: "py-4 border-none focus:outline-none text-xl", placeholder: gettext("Title"), phx_feedback_for: input_name(f, :title) %>
                 </div>
                 <div class="w-full flex absolute -top-4">
                     <%= Routes.post_read_path(@socket, :read, "") %>
@@ -53,7 +53,7 @@
         <div class="flex flex-col md:flex-row w-ufll md:space-x-4">
             <div class="flex flex-col space-y-4 w-full">
                 <div class={if tag_has_error(f,:description), do: " field__error", else: ""}>
-                    <%= textarea f, :description, class: "py-4 rounded", placeholder: gettext("Short Description") %>
+                    <%= textarea f, :description, class: "py-4 rounded", placeholder: gettext("Short Description"), phx_feedback_for: input_name(f, :description) %>
                     <%= error_tag f, :description %>
                 </div>
 

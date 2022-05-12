@@ -5,9 +5,9 @@ defmodule Snownix.Accounts do
 
   import Ecto.Query, warn: false
   alias Snownix.Repo
-  alias Snownix.Avatar
+  alias Snownix.Avatar, warn: false
 
-  alias Snownix.Accounts.{User, UserToken, UserNotifier}
+  alias Snownix.Accounts.{User, UserToken, UserNotifier, Identity}
 
   @doc """
   Returns the list of users.
@@ -74,6 +74,16 @@ defmodule Snownix.Accounts do
     if User.valid_password?(user, password), do: user
   end
 
+  def get_user_by_provider_id(provider, provider_id) do
+    query =
+      from(u in User,
+        inner_join: i in assoc(u, :identities),
+        on: i.provider == ^provider and i.provider_id == ^provider_id
+      )
+
+    Repo.one(query)
+  end
+
   @doc """
   Gets a single user.
 
@@ -108,6 +118,62 @@ defmodule Snownix.Accounts do
     %User{}
     |> User.registration_changeset(attrs)
     |> Repo.insert()
+  end
+
+  def register_user_from_provider(:github, data = %{"id" => user_id}, primary_email) do
+    if user = get_user_by_provider_id(:github, user_id) do
+      {:ok, user}
+    else
+      identity = %{provider: :github, provider_id: user_id}
+
+      if user = get_user_by_email(primary_email) do
+        add_user_identity(user, identity)
+      else
+        register_github_user(data, primary_email, identity)
+      end
+    end
+  end
+
+  def add_user_identity(user, identity) do
+    user
+    |> Ecto.build_assoc(:identities)
+    |> Identity.changeset(identity)
+    |> Repo.insert()
+    |> case do
+      {:ok, _identity} ->
+        {:ok, user}
+
+      {:error, _identity} ->
+        {:error, user}
+    end
+  end
+
+  def register_github_user(data, primary_email, identity) do
+    attrs = %{
+      identities: [identity],
+      email: primary_email,
+      username: data["login"]
+    }
+
+    %User{}
+    |> User.provider_registration_changeset(attrs, :github)
+    |> Repo.insert()
+    |> case do
+      {:ok, user} ->
+        avatar_path = download_avatar(data["avatar_url"])
+        update_user_avatar(user, avatar_path)
+        File.rm!(avatar_path)
+        {:ok, user}
+      any ->
+        any
+    end
+  end
+
+  defp download_avatar(avatar_url) do
+    {:ok, %HTTPoison.Response{body: body}} = HTTPoison.get(avatar_url)
+    path = "/tmp/#{Ecto.UUID.autogenerate()}.png"
+    File.write!(path, body)
+    path
   end
 
   @doc """
@@ -186,17 +252,9 @@ defmodule Snownix.Accounts do
   The confirmed_at date is also updated to the current time.
   """
   def update_user_avatar(user, avatar) do
-    changeset =
-      user
-      |> User.avatar_changeset(%{avatar: avatar})
-
-    Ecto.Multi.new()
-    |> Ecto.Multi.update(:user, changeset)
-    |> Repo.transaction()
-    |> case do
-      {:ok, %{user: user}} -> {:ok, user}
-      {:error, :user, changeset, _} -> {:error, changeset}
-    end
+    user
+    |> User.avatar_changeset(%{avatar: avatar})
+    |> Repo.update()
   end
 
   @doc """

@@ -12,6 +12,10 @@ if System.get_env("PHX_SERVER") && System.get_env("RELEASE_NAME") do
   config :snownix, SnownixWeb.Endpoint, server: true
 end
 
+config :snownix, :github,
+  client_id: System.get_env("GITHUB_CLIENT_ID"),
+  client_secret: System.get_env("GITHUB_CLIENT_SECRET")
+
 config :snownix,
   demo: System.get_env("SNOWNIX_ENV", "prod") == "demo"
 

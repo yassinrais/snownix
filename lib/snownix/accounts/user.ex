@@ -3,6 +3,8 @@ defmodule Snownix.Accounts.User do
   import Ecto.Changeset
   use Waffle.Ecto.Schema
 
+  alias Snownix.Accounts.Identity
+
   @primary_key {:id, :binary_id, autogenerate: true}
 
   schema "users" do
@@ -18,6 +20,8 @@ defmodule Snownix.Accounts.User do
     field :confirmed_at, :naive_datetime
 
     field :admin, :boolean, default: false
+
+    has_many :identities, Identity, foreign_key: :user_id
 
     timestamps()
   end
@@ -56,6 +60,15 @@ defmodule Snownix.Accounts.User do
     if uniq_username?, do: validate_username(changeset), else: changeset
   end
 
+  def provider_registration_changeset(user, attrs, :github) do
+    user
+    |> cast(attrs, [:email, :username])
+    |> cast_assoc(:identities, with: &Identity.changeset/2, required: true)
+    |> validate_required([:email, :username])
+    |> validate_email(attrs)
+    |> validate_username()
+  end
+
   def login_changeset(user, attrs, opts \\ []) do
     user
     |> cast(attrs, [:email, :password])
@@ -72,18 +85,18 @@ defmodule Snownix.Accounts.User do
 
   def avatar_changeset(user, attrs) do
     user
-    |> cast_attachments(attrs, [:avatar])
+    |> cast_attachments(attrs, [:avatar], allow_paths: true)
+    |> validate_required([:avatar])
   end
 
   defp validate_email(changeset, attrs) do
     changeset
-    |> cast(attrs, [:email])
     |> validate_email_changeset(attrs)
     |> unsafe_validate_unique(:email, Snownix.Repo)
     |> unique_constraint(:email)
   end
 
-  def validate_email_changeset(changeset, attrs) do
+  def validate_email_changeset(changeset,attrs) do
     changeset
     |> cast(attrs, [:email])
     |> validate_required([:email])

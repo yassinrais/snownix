@@ -2,7 +2,7 @@ defmodule SnownixWeb.AccountLive.Settings do
   use SnownixWeb, :live_view
 
   alias Snownix.Accounts
-  alias Snownix.Avatar
+  alias Snownix.Avatar, warn: false
 
   @tabs ["My Details", "Security", "Notifications"]
   def mount(_, _, socket) do

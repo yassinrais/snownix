@@ -15,7 +15,7 @@
         <span class="block text-sm"><%= @current_user.fullname %></span>
         <span class="block text-sm font-medium truncat"><%= @current_user.email %></span>
         </div>
-        <ul class="py-1" >
+        <ul class="py-1 w-full" >
             <li>
                 <%= live_redirect gettext("Profile"), to: Routes.account_profile_path(SnownixWeb.Endpoint, :index, @current_user.username), 
                 class: "block py-2 px-4 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white" %>
@@ -25,7 +25,7 @@
                 class: "block py-2 px-4 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white" %>
             </li>
         </ul>
-        <div class="py-1">
+        <div class="py-1 w-full">
             <%= link gettext("Log out"), to: Routes.user_session_path(SnownixWeb.Endpoint, :delete), 
             class: "block py-2 px-4 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white", 
             method: :delete %>

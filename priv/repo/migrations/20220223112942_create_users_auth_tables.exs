@@ -9,7 +9,7 @@ defmodule Snownix.Repo.Migrations.CreateUsersAuthTables do
 
       add :username, :citext, null: false
       add :email, :citext, null: false
-      add :hashed_password, :string, null: false
+      add :hashed_password, :string
 
       add :admin, :bool, default: false
 
@@ -38,5 +38,15 @@ defmodule Snownix.Repo.Migrations.CreateUsersAuthTables do
 
     create index(:users_tokens, [:user_id])
     create unique_index(:users_tokens, [:context, :token])
+
+    create table(:identities) do
+      add :user_id, references(:users, type: :binary_id, on_delete: :delete_all), null: false
+      add :provider_id, :string, null: false
+      add :provider, :string, null: false
+
+      timestamps()
+    end
+
+    create unique_index(:identities, [:provider_id, :provider])
   end
 end

@@ -42,11 +42,12 @@
   margin-left: 50%;
 }
 
-.post__form * .field__error input,
-.post__form * .field__error textarea,
-.post__form * .field__error svg {
+.post__form * .field__error input:not(.phx-no-feedback),
+.post__form * .field__error textarea:not(.phx-no-feedback),
+.post__form * .field__error svg:not(.phx-no-feedback) {
   @apply text-red-500 !border-red-500 fill-red-500 placeholder-red-500;
 }
+
 
 .post__form .form__actions {
   @apply flex flex-wrap md:flex-nowrap md:space-x-2 space-y-2 md:space-y-0;
